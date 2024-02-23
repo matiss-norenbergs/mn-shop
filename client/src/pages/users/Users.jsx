@@ -7,7 +7,7 @@ import Button from "components/button"
 import ModalComponent from "components/modalComponent"
 import UserForm from "./components/userForm"
 
-import { getUserListData, respStatus } from "helpers/axios/userService"
+import { deleteUserData, getUserListData, respStatus } from "helpers/axios/userService"
 
 const columns = [
     {
@@ -34,29 +34,49 @@ const columns = [
 
 const Users = () => {
     const [data, setData] = useState([])
+    const [selectedRows, setSelectedRows] = useState([])
 
-    const userFormModalElementRef = useRef()
+    const userFormModalElementRef = useRef(null)
+    const axiosCancelToken = useRef(null)
 
     const getUsers = useCallback(() => {
-        const source = axios.CancelToken.source()
-
-        getUserListData(source.token)
+        getUserListData(axiosCancelToken.current.token)
             .then(response => {
                 if (!!response && response.status === respStatus.success) {
                     setData(response.data)
                 }
             })
+    }, [axiosCancelToken])
 
-        return () => source.cancel
+    const handleCreateClick = useCallback(() => {
+        userFormModalElementRef.current?.open()
     }, [])
 
-    const handleCreateClick = () => {
-        userFormModalElementRef.current?.open()
-    }
+    const handleDeleteClick = useCallback(() => {
+        if (selectedRows.length !== 1)
+            return
+
+        const postParams = {
+            id: selectedRows[0].id
+        }
+
+        deleteUserData(postParams, axiosCancelToken.current.token)
+            .then(response => {
+                if (!!response && response.status === 204) {
+                    getUsers()
+                }
+            })
+    }, [selectedRows, getUsers])
 
     useEffect(() => {
+        axiosCancelToken.current = axios.CancelToken.source()
+
         getUsers()
     }, [getUsers])
+
+    useEffect(() => {
+        return () => axiosCancelToken.current?.cancel
+    }, [])
 
     const toolbar = (
         <Button.Group>
@@ -66,7 +86,7 @@ const Users = () => {
             <Button>
                 {"Edit"}
             </Button>
-            <Button>
+            <Button onClick={handleDeleteClick}>
                 {"Delete"}
             </Button>
         </Button.Group>
@@ -78,12 +98,14 @@ const Users = () => {
                 toolbar={toolbar}
                 columns={columns}
                 data={data}
+                getSelectedRows={setSelectedRows}
             />
             <ModalComponent
                 ref={userFormModalElementRef}
                 component={<UserForm />}
                 title="Create user"
                 confirmText="Save"
+                onConfirm={getUsers}
             />
         </Layout>
     )

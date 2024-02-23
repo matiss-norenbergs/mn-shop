@@ -9,7 +9,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyPolicy, policy =>
     {
-        policy.WithOrigins("http://localhost:3000").WithMethods("GET", "PUT", "DELETE");
+        policy.WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -28,12 +30,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseHttpsRedirection();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseCors(MyPolicy);
-
+app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
