@@ -1,0 +1,10 @@
+.basic-layout {
+    --full-height: calc(100svh - var(--header-height));
+
+    height: var(--full-height);
+    padding: 2rem 2rem;
+
+    @media (max-width: 650px) {
+        padding: .5rem 1rem;
+    }
+}

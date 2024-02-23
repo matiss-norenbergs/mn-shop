@@ -1,0 +1,97 @@
+.header-wrapper {
+    --header-side-padding: var(--view-side-padding, 2rem);
+    --header-border-radius: var(--border-radius, 5px);
+    --header-primary: var(--primary, #6200EE);
+    --header-primary-rgb: var(--primary-rgb, 98, 0, 238);
+    --header-background: var(--background-2, #ddd);
+    --header-color: var(--color, #000);
+
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: var(--header-height, 5rem);
+    padding: .5rem var(--header-side-padding);
+    background: var(--header-background);
+    color: var(--header-color);
+
+    .header-contents {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 2rem;
+
+        .navigation {
+            .nav-menu {
+                display: none;
+            }
+
+            .nav-paths {
+                display: flex;
+                gap: .5rem;
+    
+                .active-link {
+                    border-radius: var(--header-border-radius);
+                    box-shadow: 1px 2px 4px -1px rgba(var(--header-primary-rgb), .5);
+                }
+            }
+        }
+    }
+    
+    @media (max-width: 650px) {
+        .header-logo {
+            width: 45px;
+        }
+
+        .header-contents {
+            gap: .5rem;
+
+            .navigation {
+                position: relative;
+
+                .nav-menu {
+                    display: block;
+                    cursor: pointer;
+                    padding: .3rem;
+                    border-radius: 50%;
+                    border: 2px solid rgba(var(--header-primary-rgb), .4);
+                }
+                
+                .nav-paths {
+                    position: absolute;
+                    right: 0;
+                    display: none;
+                }
+
+                &:hover {
+                    .nav-menu {
+                        color: var(--header-primary);
+                        border-style: double;
+                    }
+
+                    .nav-paths {
+                        display: block;
+                        background: var(--header-background);
+
+                        .link-btn {
+                            display: flex;
+                            width: 100%;
+                            border-radius: 0;
+                        }
+
+                        .active-link {
+                            all: unset;
+
+                            .link-btn {
+                                color: var(--header-primary);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

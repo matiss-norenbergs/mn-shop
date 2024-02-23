@@ -1,0 +1,1 @@
+## Creating a shop app with .NET Core & React
