@@ -39,7 +39,7 @@
     .content {
         overflow-y: scroll;
         max-height: 80svh;
-        padding: 1rem 0;
+        padding: 1rem 2rem;
         font-size: var(--font-size);
     }
 

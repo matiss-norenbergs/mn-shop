@@ -4,12 +4,14 @@ import classNames from "classnames"
 import styles from "./Input.module.css"
 
 const propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    password: PropTypes.bool
 }
 const defaultProps = {}
 
 const Input = ({
     className,
+    password,
     ...rest
 }) => {
     return (
@@ -18,7 +20,7 @@ const Input = ({
                 styles["mn-input"],
                 className
             )}
-            type="text"
+            type={password ? "password" : "text"}
             {...rest}
         />
     )

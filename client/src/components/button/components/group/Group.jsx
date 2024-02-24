@@ -20,13 +20,10 @@ const Group = ({
 }) => {
     const buttonGroupItems = Children.map(children, (element) => {
         if (element.type === Button) {
-            return cloneElement(
-                element,
-                {
-                    className: styles["group-item"],
-                    disabled
-                }
-            )
+            return cloneElement(element, {
+                className: styles["group-item"],
+                disabled: element.props.disabled || disabled
+            })
         }
 
         return element

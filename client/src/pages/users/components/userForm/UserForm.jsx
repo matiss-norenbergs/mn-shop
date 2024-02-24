@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"
-import { forwardRef, useCallback, useEffect, useImperativeHandle } from "react"
-import Form, { Field } from "rc-field-form"
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo } from "react"
 
+import Form from "components/form"
 import Input from "components/input"
 
 import { getUserData, saveUserData } from "helpers/axios/userService"
@@ -17,8 +17,8 @@ const defaultProps = {
 }
 
 const inputRules = [
-    { required: true, message: "This field is required" },
-    { whitespace: true, message: "This field is required" }
+    { required: true, message: "This field is required!" },
+    { whitespace: true, message: "This field is required!" }
 ]
 
 const UserForm = forwardRef(({
@@ -36,12 +36,24 @@ const UserForm = forwardRef(({
         getUserData(postParams)
             .then(response => {
                 if (!!response && response.status === 200) {
-                    const data = response.data
+                    const {
+                        id,
+                        name,
+                        surname,
+                        email,
+                        password
+                    } = response.data
 
-                    if (data.id !== 0)
+                    if (id !== 0)
                         setModalTitle("Edit user")
 
-                    form.setFieldsValue(data)
+                    form.setFieldsValue({
+                        name,
+                        surname,
+                        email,
+                        password,
+                        password2: password
+                    })
                 }
             })
     }, [form, setModalTitle])
@@ -81,35 +93,70 @@ const UserForm = forwardRef(({
         getUser(objectId)
     }, [getUser, objectId])
 
+    const validatePassword = useCallback(({ field }, value) => {
+        return new Promise((resolve, reject) => {
+            const otherPassword = form.getFieldValue(field === "password" ? "password2" : "password")
+            if (value !== otherPassword)
+                return reject("Passwords don't match!")
+
+            return resolve()
+        })
+    }, [form])
+
+    const passwordRules = useMemo(() => {
+        return [
+            ...inputRules,
+            { validator: validatePassword }
+        ]
+    }, [validatePassword])
+
     return (
         <Form form={form}>
-            <Field
+            <Form.Field
+                required
                 name="name"
-                initialValue={""}
+                initialValue=""
                 rules={inputRules}
+                label="Name"
             >
-                <Input placeholder="Name..." />
-            </Field>
-            <Field
+                <Input />
+            </Form.Field>
+            <Form.Field
+                required
                 name="surname"
-                initialValue={""}
+                initialValue=""
                 rules={inputRules}
+                label="Surname"
             >
-                <Input placeholder="Surname..." />
-            </Field>
-            <Field
+                <Input />
+            </Form.Field>
+            <Form.Field
+                required
                 name="email"
-                initialValue={""}
+                initialValue=""
                 rules={inputRules}
+                label="Email"
             >
-                <Input placeholder="Email..." />
-            </Field>
-            <Field
+                <Input />
+            </Form.Field>
+            <Form.Field
+                required
                 name="password"
-                initialValue={""}
+                initialValue=""
+                rules={passwordRules}
+                label="Password"
             >
-                <Input placeholder="Password..." />
-            </Field>
+                <Input password />
+            </Form.Field>
+            <Form.Field
+                required
+                name="password2"
+                initialValue=""
+                rules={passwordRules}
+                label="Password (repeat)"
+            >
+                <Input password />
+            </Form.Field>
         </Form>
     )
 })

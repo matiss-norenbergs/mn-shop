@@ -28,23 +28,31 @@ const columns = [
     {
         field: "email",
         name: "Email",
-        width: 120
+        width: 200
     }
 ]
 
 const Users = () => {
     const [data, setData] = useState([])
     const [selectedRows, setSelectedRows] = useState([])
+    const [isDataLoading, setIsDataLoading] = useState(false)
 
     const userFormModalElementRef = useRef(null)
     const axiosCancelToken = useRef(null)
 
+    const isRowSelected = selectedRows.length === 1
+
     const getUsers = useCallback(() => {
+        setIsDataLoading(true)
+
         getUserListData(axiosCancelToken.current.token)
             .then(response => {
                 if (!!response && response.status === respStatus.success) {
                     setData(response.data)
                 }
+            })
+            .finally(() => {
+                setIsDataLoading(false)
             })
     }, [axiosCancelToken])
 
@@ -53,15 +61,17 @@ const Users = () => {
     }, [])
 
     const handleEditClick = useCallback(() => {
-        if (selectedRows.length !== 1)
+        if (!isRowSelected)
             return
 
         userFormModalElementRef.current?.open({ objectId: selectedRows[0].id })
-    }, [selectedRows])
+    }, [selectedRows, isRowSelected])
 
     const handleDeleteClick = useCallback(() => {
-        if (selectedRows.length !== 1)
+        if (!isRowSelected)
             return
+
+        setIsDataLoading(true)
 
         const postParams = {
             id: selectedRows[0].id
@@ -73,7 +83,10 @@ const Users = () => {
                     getUsers()
                 }
             })
-    }, [selectedRows, getUsers])
+            .finally(() => {
+                setIsDataLoading(false)
+            })
+    }, [isRowSelected, selectedRows, getUsers])
 
     useEffect(() => {
         axiosCancelToken.current = axios.CancelToken.source()
@@ -86,24 +99,39 @@ const Users = () => {
     }, [])
 
     const toolbar = (
-        <Button.Group>
+        <>
+            <Button.Group disabled={isDataLoading}>
+                <Button
+                    type="primary"
+                    onClick={handleCreateClick}
+                    faIcon="plus"
+                >
+                    {"Create"}
+                </Button>
+                <Button
+                    onClick={handleEditClick}
+                    disabled={!isRowSelected}
+                    faIcon="edit"
+                >
+                    {"Edit"}
+                </Button>
+                <Button
+                    onClick={handleDeleteClick}
+                    disabled={!isRowSelected}
+                    faIcon="trash-alt"
+                >
+                    {"Delete"}
+                </Button>
+            </Button.Group>
+            <Button.Spacer />
             <Button
-                type="primary"
-                onClick={handleCreateClick}
+                onClick={getUsers}
+                disabled={isDataLoading}
+                faIcon="sync"
             >
-                {"Create"}
+                {"Refresh"}
             </Button>
-            <Button
-                onClick={handleEditClick}
-            >
-                {"Edit"}
-            </Button>
-            <Button
-                onClick={handleDeleteClick}
-            >
-                {"Delete"}
-            </Button>
-        </Button.Group>
+        </>
     )
 
     return (
@@ -120,6 +148,7 @@ const Users = () => {
                 title="Create user"
                 confirmText="Save"
                 onConfirm={getUsers}
+                width={500}
             />
         </Layout>
     )

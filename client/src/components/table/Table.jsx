@@ -71,13 +71,12 @@ const Table = ({
 
     return (
         <div className={styles["table-outer-wrapper"]}>
-            <div className={styles["toolbar-wrapper"]}>
-                {toolbar}
-            </div>
-            <table className={styles["table-wrapper"]}>
-                {/* <caption className={styles["table-caption"]}>
+            {toolbar && (
+                <div className={styles["toolbar-wrapper"]}>
                     {toolbar}
-                </caption> */}
+                </div>
+            )}
+            <table className={styles["table-wrapper"]}>
                 <thead>
                     <tr>
                         {columns.map(({

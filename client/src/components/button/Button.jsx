@@ -4,6 +4,7 @@ import classNames from "classnames"
 import FaIcon from "../faIcon"
 
 import Group from "./components/group"
+import Spacer from "./components/spacer"
 
 import styles from "./Button.module.css"
 
@@ -26,7 +27,8 @@ const propTypes = {
     type: PropTypes.oneOf(Object.keys(buttonTypes))
 }
 const defaultProps = {
-    type: buttonTypes.default
+    type: buttonTypes.default,
+    disabled: false
 }
 
 const Button = ({
@@ -35,14 +37,15 @@ const Button = ({
     className,
     faIcon,
     type,
+    disabled,
     ...rest
 }) => {
     const buttonStyles = classNames(
         styles["button-wrapper"],
         styles[`${type}`],
         {
-            [styles["active"]]: active && !rest.disabled,
-            [styles["disabled"]]: rest.disabled
+            [styles["active"]]: active && !disabled,
+            [styles["disabled"]]: disabled
         },
         className
     )
@@ -50,6 +53,7 @@ const Button = ({
     return (
         <button
             className={buttonStyles}
+            disabled={disabled}
             {...rest}
         >
             {faIcon && (
@@ -66,5 +70,6 @@ Button.propTypes = propTypes
 Button.defaultProps = defaultProps
 
 Button.Group = Group
+Button.Spacer = Spacer
 
 export default Button
