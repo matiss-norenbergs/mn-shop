@@ -17,6 +17,12 @@ const getUserListData = (cancelToken) => {
     })
 }
 
+const getUserData = (postParams, cancelToken) => {
+    return axios.get(`${apiUrl}${objects.user}/${postParams?.id}`, {
+        cancelToken: cancelToken
+    })
+}
+
 const saveUserData = (postParams, cancelToken) => {
     return axios.post(`${apiUrl}${objects.user}`,
         postParams,
@@ -38,6 +44,7 @@ const deleteUserData = (postParams, cancelToken) => {
 export {
     respStatus,
     getUserListData,
+    getUserData,
     saveUserData,
     deleteUserData
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 
 import Core from 'components/core'
+import Input from 'components/input'
 
 import Home from 'pages/home'
 import Users from 'pages/users'
@@ -25,11 +26,20 @@ const routes = [
     },
 ]
 
+const search = (
+    <Input
+        placeholder="Search..."
+    />
+)
+
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
     <React.StrictMode>
         <Core
+            appTitle="Game Shop"
+            showHeaderLogo={false}
             routes={routes}
+            extraHeaderContent={search}
             hideFooter
         />
     </React.StrictMode>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MN_API.Models;
+using MN_API.Services;
 
 namespace MN_API.Controllers
 {
@@ -10,30 +11,44 @@ namespace MN_API.Controllers
     {
         private readonly UserContext _context;
 
-        public UserDataController(UserContext context)
-        {
-            _context = context;
-        }
+        private readonly UserService _userService;
+
+        public UserDataController(UserService userService) => _userService = userService;
 
         // GET: api/UserData
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserData>>> GetUserDataSet()
         {
-            return await _context.UserDataSet.ToListAsync();
+            try
+            {
+                var userList = _userService.GetUserList();
+                if (userList == null)
+                    return NotFound();
+
+                return userList;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/UserData/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserData>> GetUserData(long id)
         {
-            var userData = await _context.UserDataSet.FindAsync(id);
-
-            if (userData == null)
+            try
             {
-                return NotFound();
-            }
+                var user = _userService.GetUserData(id);
+                if (user == null)
+                    throw new Exception("Error getting user data");
 
-            return userData;
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/UserData/5
@@ -72,26 +87,36 @@ namespace MN_API.Controllers
         [HttpPost]
         public async Task<ActionResult<UserData>> PostUserData(UserData userData)
         {
-            _context.UserDataSet.Add(userData);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var resp = _userService.SetUserData(userData);
+                if (resp <= 0)
+                    return BadRequest();
 
-            return CreatedAtAction(nameof(GetUserData), new { id = userData.Id }, userData);
+                return Ok(userData);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/UserData/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserData(long id)
         {
-            var userData = await _context.UserDataSet.FindAsync(id);
-            if (userData == null)
+            try
             {
-                return NotFound();
+                var resp = _userService.DeleteUser(id);
+                if (!resp)
+                    throw new Exception("Error deleting user data");
+
+                return NoContent();
             }
-
-            _context.UserDataSet.Remove(userData);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         private bool UserDataExists(long id)

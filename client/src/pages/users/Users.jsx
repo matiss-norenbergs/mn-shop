@@ -52,6 +52,13 @@ const Users = () => {
         userFormModalElementRef.current?.open()
     }, [])
 
+    const handleEditClick = useCallback(() => {
+        if (selectedRows.length !== 1)
+            return
+
+        userFormModalElementRef.current?.open({ objectId: selectedRows[0].id })
+    }, [selectedRows])
+
     const handleDeleteClick = useCallback(() => {
         if (selectedRows.length !== 1)
             return
@@ -80,13 +87,20 @@ const Users = () => {
 
     const toolbar = (
         <Button.Group>
-            <Button onClick={handleCreateClick}>
+            <Button
+                type="primary"
+                onClick={handleCreateClick}
+            >
                 {"Create"}
             </Button>
-            <Button>
+            <Button
+                onClick={handleEditClick}
+            >
                 {"Edit"}
             </Button>
-            <Button onClick={handleDeleteClick}>
+            <Button
+                onClick={handleDeleteClick}
+            >
                 {"Delete"}
             </Button>
         </Button.Group>

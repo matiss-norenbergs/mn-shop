@@ -1,4 +1,5 @@
 import PropTypes from "prop-types"
+import { useEffect } from "react"
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { library } from "@fortawesome/fontawesome-svg-core"
@@ -15,14 +16,18 @@ library.add(far, fas)
 const propTypes = {
     routes: PropTypes.array,
     hideFooter: PropTypes.bool,
-    extraHeaderContent: PropTypes.node
+    extraHeaderContent: PropTypes.node,
+    appTitle: PropTypes.string,
+    showHeaderLogo: PropTypes.bool
 }
 const defaultProps = {}
 
 const Core = ({
     routes,
     hideFooter,
-    extraHeaderContent
+    extraHeaderContent,
+    appTitle,
+    showHeaderLogo
 }) => {
     const headerPaths = routes.filter(({ menuHidden }) => !menuHidden).map(({ path, title, icon }) => ({
         path,
@@ -30,12 +35,19 @@ const Core = ({
         icon
     }))
 
+    useEffect(() => {
+        if (appTitle)
+            document.title = appTitle
+    }, [appTitle])
+
     return (
         <div className={styles["core-wrapper"]}>
             <Router>
                 <Header
                     paths={headerPaths}
                     extraContent={extraHeaderContent}
+                    appTitle={appTitle}
+                    showLogo={showHeaderLogo}
                 />
                 <div className={styles["core-content"]}>
                     <Routes>

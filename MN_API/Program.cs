@@ -1,5 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using MN_API.Models;
+using MN_API.Services;
 
 var MyPolicy = "MN_Policy";
 
@@ -15,9 +14,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddSingleton<UserService>();
 
-builder.Services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserList"));
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

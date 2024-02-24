@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap');
+/* Font 1 */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Font 2 - Title */
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
 
 :root {
     --white: #fff;
@@ -8,34 +12,23 @@
     --dark-gray: #181818;
     --darker-gray: #141414;
     --black: #000;
-    --latvian-red: #A4343A;
-    --latvian-red-rgb: 164, 52, 58;
-    --prime-purple: #6200ee;
-    --prime-purple-rgb: 98, 0, 238;
-    --green: #12aa45;
-    --green-rgb: 18, 170, 69;
-    --light-blue: #54a0df;
-    --light-blue-rgb: 84, 160, 223;
-    --candy-red: #c71944;
-    --candy-red-rgb: 199, 25, 68;
 
-    --font-family: 'Montserrat', sans-serif;
+    --font-family: "Inter Tight", sans-serif;
+    --font-family-2: "Kaushan Script", cursive;
     --font-size: 14px;
-    --header-height: 3rem;
+    --header-height: 4rem;
     --footer-height: 0rem;
     --view-side-padding: 2rem;
     --border-radius: 5px;
 
-    --primary-light: var(--candy-red);
-    --primary-rgb-light: var(--candy-red-rgb);
+    --primary-light: #c71944;
+    --primary-rgb-light: 199, 25, 68;
     --background-light: var(--white-2);
     --background-2-light: var(--lighter-gray);
     --color-light: var(--black);
 
-    --primary-dark: var(--latvian-red);
-    --primary-rgb-dark: var(--latvian-red-rgb);
-    --background-dark: var(--darker-gray);
-    --background-2-dark: var(--dark-gray);
+    --background-dark: #151515;
+    --background-2-dark: #141414;
     --color-dark: var(--white-2);
 
     --primary: var(--primary-light);
@@ -47,8 +40,8 @@
     --transparent: rgba(0, 0, 0, 0.2);
 
     &:has(#user-theme[active="dark"]) {
-        --primary: var(--primary-dark);
-        --primary-rgb: var(--primary-rgb-dark);
+        /* --primary: var(--primary-dark);
+        --primary-rgb: var(--primary-rgb-dark); */
         --background: var(--background-dark);
         --background-2: var(--background-2-dark);
         --color: var(--color-dark);

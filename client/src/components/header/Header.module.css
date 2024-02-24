@@ -5,6 +5,7 @@
     --header-primary-rgb: var(--primary-rgb, 98, 0, 238);
     --header-background: var(--background-2, #ddd);
     --header-color: var(--color, #000);
+    --header-font-family-2: var(--font-family-2, sans-serif);
 
     position: fixed;
     top: 0;
@@ -17,6 +18,17 @@
     padding: .5rem var(--header-side-padding);
     background: var(--header-background);
     color: var(--header-color);
+
+    .header-left-side {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        .header-app-title {
+            font-family: var(--header-font-family-2);
+            color: var(--header-primary);
+        }
+    }
 
     .header-contents {
         display: flex;
@@ -53,8 +65,12 @@
                 position: relative;
 
                 .nav-menu {
-                    display: block;
                     cursor: pointer;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    aspect-ratio: 1;
+                    width: 2.5rem;
                     padding: .3rem;
                     border-radius: 50%;
                     border: 2px solid rgba(var(--header-primary-rgb), .4);

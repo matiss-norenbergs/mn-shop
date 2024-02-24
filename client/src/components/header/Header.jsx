@@ -7,31 +7,49 @@ import Button from "../button"
 import MNIcon from "../mnIcon"
 import FaIcon from "../faIcon"
 import ThemeSwitch from "../themeSwitch"
+import Heading from "../heading"
 
 import styles from "./Header.module.css"
 
 const propTypes = {
     paths: PropTypes.array,
-    extraContent: PropTypes.node
+    extraContent: PropTypes.node,
+    appTitle: PropTypes.string,
+    showLogo: PropTypes.bool
 }
 const defaultProps = {
-    paths: []
+    paths: [],
+    showLogo: true
 }
 
 const Header = ({
     paths,
-    extraContent
+    extraContent,
+    appTitle,
+    showLogo
 }) => (
     <header className={styles["header-wrapper"]}>
-        <MNIcon className={styles["header-logo"]} />
+        <div className={styles["header-left-side"]}>
+            {showLogo && (
+                <MNIcon className={styles["header-logo"]} />
+            )}
+            <Heading
+                className={styles["header-app-title"]}
+                level={1}
+            >
+                {appTitle}
+            </Heading>
+        </div>
+        {extraContent}
         <div className={styles["header-contents"]}>
             {paths.length > 0 && (
                 <nav className={styles["navigation"]}>
-                    <FaIcon
-                        className={styles["nav-menu"]}
-                        icon="bars"
-                        fixedWidth
-                    />
+                    <span className={styles["nav-menu"]}>
+                        <FaIcon
+                            icon="bars"
+                            fixedWidth
+                        />
+                    </span>
                     <div className={styles["nav-paths"]}>
                         {paths.map(({ path, title, icon }) => (
                             <NavLink
@@ -53,7 +71,6 @@ const Header = ({
                     </div>
                 </nav>
             )}
-            {extraContent}
             <ThemeSwitch />
         </div>
     </header>
