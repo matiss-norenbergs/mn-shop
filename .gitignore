@@ -32,4 +32,4 @@ msbuild.wrn
 .vs/
 
 # IDK
-MN_API/Databases
+MN_Shop/MN_Shop.Server/Databases
