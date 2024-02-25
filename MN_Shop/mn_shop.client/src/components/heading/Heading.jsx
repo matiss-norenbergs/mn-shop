@@ -18,7 +18,7 @@ const propTypes = {
     level: PropTypes.oneOf(Object.keys(headingLevelTypes).map(Number))
 }
 const defaultProps = {
-    level: headingLevelTypes[1]
+    level: 1
 }
 
 const Heading = ({

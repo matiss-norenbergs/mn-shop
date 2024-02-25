@@ -4,16 +4,23 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo } from
 import Form from "@/components/form"
 import Input from "@/components/input"
 
-import { getUserData, saveUserData } from "@/helpers/axios/userService"
+import { getUserData, saveUserData, loginUser } from "@/helpers/axios/userService"
 
 //import styles from "./UserForm.module.css"
 
+const userFormStates = {
+    login: 1,
+    register: 2
+}
+
 const propTypes = {
     objectId: PropTypes.number,
-    setModalTitle: PropTypes.func
+    setModalTitle: PropTypes.func,
+    formState: PropTypes.oneOf(Object.values(userFormStates))
 }
 const defaultProps = {
-    objectId: 0
+    objectId: 0,
+    formState: userFormStates.register
 }
 
 const inputRules = [
@@ -23,7 +30,8 @@ const inputRules = [
 
 const UserForm = forwardRef(({
     objectId,
-    setModalTitle
+    setModalTitle,
+    formState
 }, ref) => {
 
     const [form] = Form.useForm()
@@ -85,23 +93,55 @@ const UserForm = forwardRef(({
         })
     }, [form, objectId])
 
+    const handleUserLogin = useCallback(() => {
+        return new Promise((resolve, reject) => {
+            const postParams = {}
+
+            form.validateFields()
+                .then(values => {
+                    Object.keys(values).forEach(field => {
+                        if (["email", "password"].includes(field))
+                            postParams[field] = values[field]
+                    })
+
+                    loginUser(postParams)
+                        .then(response => {
+                            if (!!response && response.status === 200)
+                                return resolve()
+                        })
+                        .catch(() => {
+                            return reject()
+                        })
+                })
+                .catch(_ => {
+                    return reject()
+                })
+        })
+    }, [form])
+
     useImperativeHandle(ref, () => ({
-        save: handleUserSave
-    }), [handleUserSave])
+        save: handleUserSave,
+        login: handleUserLogin
+    }), [handleUserSave, handleUserLogin])
 
     useEffect(() => {
         getUser(objectId)
     }, [getUser, objectId])
 
+    const isRegisterForm = formState === userFormStates.register
+
     const validatePassword = useCallback(({ field }, value) => {
         return new Promise((resolve, reject) => {
+            if (!isRegisterForm)
+                return resolve()
+
             const otherPassword = form.getFieldValue(field === "password" ? "password2" : "password")
             if (value !== otherPassword)
                 return reject("Passwords don't match!")
 
             return resolve()
         })
-    }, [form])
+    }, [form, isRegisterForm])
 
     const passwordRules = useMemo(() => {
         return [
@@ -112,24 +152,28 @@ const UserForm = forwardRef(({
 
     return (
         <Form form={form}>
-            <Form.Field
-                required
-                name="name"
-                initialValue=""
-                rules={inputRules}
-                label="Name"
-            >
-                <Input />
-            </Form.Field>
-            <Form.Field
-                required
-                name="surname"
-                initialValue=""
-                rules={inputRules}
-                label="Surname"
-            >
-                <Input />
-            </Form.Field>
+            {isRegisterForm && (
+                <>
+                    <Form.Field
+                        required
+                        name="name"
+                        initialValue=""
+                        rules={inputRules}
+                        label="Name"
+                    >
+                        <Input />
+                    </Form.Field>
+                    <Form.Field
+                        required
+                        name="surname"
+                        initialValue=""
+                        rules={inputRules}
+                        label="Surname"
+                    >
+                        <Input />
+                    </Form.Field>
+                </>
+            )}
             <Form.Field
                 required
                 name="email"
@@ -148,15 +192,17 @@ const UserForm = forwardRef(({
             >
                 <Input password />
             </Form.Field>
-            <Form.Field
-                required
-                name="password2"
-                initialValue=""
-                rules={passwordRules}
-                label="Password (repeat)"
-            >
-                <Input password />
-            </Form.Field>
+            {isRegisterForm && (
+                <Form.Field
+                    required
+                    name="password2"
+                    initialValue=""
+                    rules={passwordRules}
+                    label="Password (repeat)"
+                >
+                    <Input password />
+                </Form.Field>
+            )}
         </Form>
     )
 })

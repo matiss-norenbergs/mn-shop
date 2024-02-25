@@ -37,6 +37,18 @@ const saveUserData = (postParams, cancelToken) => {
     )
 }
 
+const loginUser = (postParams, cancelToken) => {
+    return axios.post(`${apiUrl}${objects.user}/login`,
+        postParams,
+        {
+            headers: headers
+        },
+        {
+            cancelToken: cancelToken
+        }
+    )
+}
+
 const deleteUserData = (postParams, cancelToken) => {
     return axios.delete(`${apiUrl}${objects.user}/${postParams?.id}`, {
         cancelToken: cancelToken
@@ -48,5 +60,6 @@ export {
     getUserListData,
     getUserData,
     saveUserData,
-    deleteUserData
+    deleteUserData,
+    loginUser
 }

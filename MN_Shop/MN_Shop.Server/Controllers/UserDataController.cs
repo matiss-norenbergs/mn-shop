@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MN_Shop.Server.Helpers;
 using MN_Shop.Server.Models;
 using MN_Shop.Server.Services;
 
@@ -56,11 +57,31 @@ namespace MN_Shop.Server.Controllers
         {
             try
             {
+                if (!UserHelper.IsValidUserData(userData))
+                    return BadRequest();
+
                 var resp = _userService.SetUserData(userData);
                 if (resp <= 0)
                     return BadRequest();
 
                 return Ok(userData);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<bool>> UserLogin([FromBody] UserData userData)
+        {
+            try
+            {
+                var userCollection = _userService.GetUserCollection();
+                if (userCollection.TryGetValue(userData.Email, out var userDetails) && userDetails.Password == UserHelper.EncryptPassword(userData.Password))
+                    return Ok(true);
+
+                return BadRequest(false);
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@ import Core from "./components/core"
 import Input from './components/input'
 
 import Home from './pages/home'
+import Login from "./pages/login"
 import Users from './pages/users'
 
 const routes = [
@@ -19,6 +20,12 @@ const routes = [
         element: Users,
         //menuHidden: true
     },
+    {
+        path: "/login",
+        title: "Login",
+        element: Login,
+        //menuHidden: true
+    }
 ]
 
 const search = (

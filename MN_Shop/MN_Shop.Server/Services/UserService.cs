@@ -46,7 +46,22 @@ namespace MN_Shop.Server.Services
             }
         }
 
-        public UserData GetUserData(long userId)
+        public Dictionary<string, UserData> GetUserCollection()
+        {
+            try
+            {
+                var userList = GetUserList() ?? [];
+
+                return userList.ToDictionary(x => x.Email, x => x);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return [];
+            }
+        }
+
+        public UserData? GetUserData(long userId)
         {
             try
             {

@@ -1,8 +1,10 @@
 import PropTypes from "prop-types"
 import { Field as RcField } from "rc-field-form"
 
+import styles from "./Field.module.css"
+
 const propTypes = {
-    className: PropTypes.string,
+    children: PropTypes.node,
     name: PropTypes.string,
     initialValue: PropTypes.any,
     rules: PropTypes.array,
@@ -14,7 +16,6 @@ const defaultProps = {}
 
 const Field = ({
     children,
-    className,
     label,
     required,
     errors,
@@ -22,7 +23,7 @@ const Field = ({
 }) => {
     return (
         <div
-            className={className}
+            className={styles["form-field"]}
             aria-label={label}
             aria-required={required}
         >

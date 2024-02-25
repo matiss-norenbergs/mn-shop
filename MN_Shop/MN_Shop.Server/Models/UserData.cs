@@ -17,7 +17,19 @@ namespace MN_Shop.Server.Models
         [ProtoMember(4, IsRequired = true)]
         public string Email { get; set; } = string.Empty;
 
+        /// <summary>
+        /// SHA256 Encrypted password
+        /// </summary>
         [ProtoMember(5, IsRequired = true)]
         public string Password { get; set; } = string.Empty;
+
+        [ProtoMember(6, IsRequired = true)]
+        public EUserRole Role { get; set; } = EUserRole.Customer;
+    }
+
+    public enum EUserRole
+    {
+        Customer = 1,
+        Admin = 2
     }
 }

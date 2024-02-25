@@ -5,7 +5,8 @@ import Layout from '@/components/layout'
 import Table from "@/components/table"
 import Button from "@/components/button"
 import ModalComponent from "@/components/modalComponent"
-import UserForm from "./components/userForm"
+
+import UserForm from "@/shared/userForm"
 
 import { deleteUserData, getUserListData, respStatus } from "@/helpers/axios/userService"
 

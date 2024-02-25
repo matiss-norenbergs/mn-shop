@@ -25,13 +25,15 @@ const propTypes = {
     rowKey: PropTypes.string,
     cellRenderers: PropTypes.object,
     getSelectedRows: PropTypes.func,
-    toolbar: PropTypes.node
+    toolbar: PropTypes.node,
+    allowMultiselection: PropTypes.bool
 }
 const defaultProps = {
     columns: [],
     data: [],
     rowKey: "id",
-    cellRenderers: {}
+    cellRenderers: {},
+    allowMultiselection: false
 }
 
 const Table = ({
@@ -40,7 +42,8 @@ const Table = ({
     rowKey,
     cellRenderers,
     getSelectedRows,
-    toolbar
+    toolbar,
+    allowMultiselection
 }) => {
     const [targetKeys, setTargetKeys] = useState([])
 
@@ -50,12 +53,14 @@ const Table = ({
 
             if (currentKeys.includes(id))
                 currentKeys.splice(currentKeys.indexOf(id), 1)
+            else if (!allowMultiselection)
+                return [id]
             else
                 currentKeys.push(id)
 
             return currentKeys
         })
-    }, [])
+    }, [allowMultiselection])
 
     const getCellRenderer = useCallback((CellRenderer, cellValue, rowData) => (
         <CellRenderer
