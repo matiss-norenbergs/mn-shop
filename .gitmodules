@@ -1,3 +1,0 @@
-[submodule "client/src/lib"]
-	path = client/src/lib
-	url = https://github.com/matiss-norenbergs/mn-lib.git

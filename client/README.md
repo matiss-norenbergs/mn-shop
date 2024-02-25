@@ -1,1 +1,0 @@
-## Client part for the shop

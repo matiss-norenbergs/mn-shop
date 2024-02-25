@@ -1,0 +1,6 @@
+@MN_Shop.Server_HostAddress = http://localhost:5008
+
+GET {{MN_Shop.Server_HostAddress}}/api/userdata/
+Accept: application/json
+
+###
