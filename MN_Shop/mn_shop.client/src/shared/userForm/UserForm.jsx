@@ -150,6 +150,8 @@ const UserForm = forwardRef(({
         ]
     }, [validatePassword])
 
+    const isEditForm = objectId !== 0
+
     return (
         <Form form={form}>
             {isRegisterForm && (
@@ -183,25 +185,29 @@ const UserForm = forwardRef(({
             >
                 <Input />
             </Form.Field>
-            <Form.Field
-                required
-                name="password"
-                initialValue=""
-                rules={passwordRules}
-                label="Password"
-            >
-                <Input password />
-            </Form.Field>
-            {isRegisterForm && (
-                <Form.Field
-                    required
-                    name="password2"
-                    initialValue=""
-                    rules={passwordRules}
-                    label="Password (repeat)"
-                >
-                    <Input password />
-                </Form.Field>
+            {!isEditForm && (
+                <>
+                    <Form.Field
+                        required
+                        name="password"
+                        initialValue=""
+                        rules={passwordRules}
+                        label="Password"
+                    >
+                        <Input password />
+                    </Form.Field>
+                    {isRegisterForm && (
+                        <Form.Field
+                            required
+                            name="password2"
+                            initialValue=""
+                            rules={passwordRules}
+                            label="Password (repeat)"
+                        >
+                            <Input password />
+                        </Form.Field>
+                    )}
+                </>
             )}
         </Form>
     )

@@ -5,5 +5,5 @@
     gap: 1rem;
     padding: 3rem 2rem;
     border-radius: 15px;
-    background: rgba(var(--primary-rgb), 0.2);
+    background: rgba(var(--primary-rgb), .23);
 }

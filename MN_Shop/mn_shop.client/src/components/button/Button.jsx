@@ -60,6 +60,7 @@ const Button = ({
                 <FaIcon
                     icon={faIcon}
                     padded={!!children}
+                    fixedWidth
                 />
             )}
             {children}

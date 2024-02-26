@@ -23,16 +23,11 @@ const routes = [
     {
         path: "/login",
         title: "Login",
+        icon: "arrow-right-to-bracket",
         element: Login,
         //menuHidden: true
     }
 ]
-
-const search = (
-    <Input
-        placeholder="Search..."
-    />
-)
 
 const App = () => {
     return (
@@ -40,7 +35,9 @@ const App = () => {
             appTitle="Game Shop"
             showHeaderLogo={false}
             routes={routes}
-            extraHeaderContent={search}
+            // extraHeaderContent={<Input
+            //     placeholder="Search..."
+            // />}
             hideFooter
         />
     )

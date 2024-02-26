@@ -1,10 +1,15 @@
 .form-field {
+    --field-font-size: var(--font-size, 14px);
+    --field-color: var(--color, #000);
+
     position: relative;
     display: grid;
     grid-template-columns: 18ch auto;
 
     &::before {
         content: attr(aria-label) ":";
+        font-size: var(--field-font-size);
+        color: var(--field-color);
     }
 
     &[aria-required="true"]::before {

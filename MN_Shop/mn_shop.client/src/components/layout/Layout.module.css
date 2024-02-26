@@ -1,8 +1,11 @@
-.basic-layout {
-    --full-height: calc(100svh - var(--header-height));
+.basic-layout,
+.centered-layout {
+    --layout-full-height: calc(100svh - var(--header-height));
+    --layout-color: var(--color, #fff);
 
-    height: var(--full-height);
+    height: var(--layout-full-height);
     padding: 2rem 2rem;
+    color: var(--layout-color);
 
     @media (max-width: 650px) {
         padding: .5rem 1rem;
@@ -10,15 +13,7 @@
 }
 
 .centered-layout {
-    --full-height: calc(100svh - var(--header-height));
-
     display: flex;
     align-items: center;
     justify-content: center;
-    height: var(--full-height);
-    padding: 2rem 2rem;
-
-    @media (max-width: 650px) {
-        padding: .5rem 1rem;
-    }
 }

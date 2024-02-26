@@ -25,6 +25,8 @@ namespace MN_Shop.Server.Controllers
                 if (userList == null)
                     return NotFound();
 
+                userList.ForEach(x => x.Password = string.Empty);
+
                 return userList;
             }
             catch (Exception ex)
@@ -43,6 +45,8 @@ namespace MN_Shop.Server.Controllers
                 if (user == null)
                     throw new Exception("Error getting user data");
 
+                user.Password = string.Empty;
+
                 return Ok(user);
             }
             catch (Exception ex)
@@ -57,8 +61,17 @@ namespace MN_Shop.Server.Controllers
         {
             try
             {
-                if (!UserHelper.IsValidUserData(userData))
+                if (!UserHelper.IsValidUserData(userData, userData.Id == 0))
                     return BadRequest();
+
+                if (userData.Id > 0)
+                {
+                    var prevUserData = _userService.GetUserData(userData.Id);
+                    if (prevUserData == null)
+                        throw new Exception("Error getting user data!");
+
+                    userData.Password = prevUserData.Password;
+                }
 
                 var resp = _userService.SetUserData(userData);
                 if (resp <= 0)

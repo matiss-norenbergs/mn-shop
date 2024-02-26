@@ -1,6 +1,7 @@
 .theme-switch {
     --theme-switch-primary: var(--primary, #6200EE);
     --theme-switch-primary-rgb: var(--primary-rgb, 98, 0, 238);
+    --theme-switch-background: var(--background, #fff);
     --theme-switch-color: var(--color, #000);
 
     cursor: pointer;
@@ -12,11 +13,9 @@
     width: 2.5rem;
     padding: .3rem;
     border-radius: 50%;
-    color: var(--theme-switch-color);
-    border: 2px solid rgba(var(--theme-switch-primary-rgb), .4);
+    color: var(--theme-switch-background);
 
     &:hover {
-        color: var(--theme-switch-primary);
-        border-style: double;
+        background: rgba(0, 0, 0, .15);
     }
 }

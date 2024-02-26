@@ -16,7 +16,7 @@
     width: 100%;
     height: var(--header-height, 5rem);
     padding: .5rem var(--header-side-padding);
-    background: var(--header-background);
+    background: var(--header-primary);
     color: var(--header-color);
 
     .header-left-side {
@@ -26,7 +26,7 @@
 
         .header-app-title {
             font-family: var(--header-font-family-2);
-            color: var(--header-primary);
+            color: var(--header-background);
         }
     }
 
@@ -43,23 +43,34 @@
 
             .nav-paths {
                 display: flex;
-                gap: .5rem;
+                gap: .4rem;
+
+                .link-btn {
+                    font-size: 14.5px;
+                    color: var(--header-background);
+                }
     
                 .active-link {
                     border-radius: var(--header-border-radius);
-                    box-shadow: 1px 2px 4px -1px rgba(var(--header-primary-rgb), .5);
+                    background: rgba(0, 0, 0, .15);
                 }
             }
         }
     }
     
     @media (max-width: 650px) {
-        .header-logo {
-            width: 45px;
+        .header-left-side {
+            .header-logo {
+                width: 45px;
+            }
+
+            .header-app-title {
+                font-size: 1.75em;
+            }
         }
 
         .header-contents {
-            gap: .5rem;
+            gap: .2rem;
 
             .navigation {
                 position: relative;
@@ -73,19 +84,22 @@
                     width: 2.5rem;
                     padding: .3rem;
                     border-radius: 50%;
-                    border: 2px solid rgba(var(--header-primary-rgb), .4);
+                    color: var(--header-background);
                 }
                 
                 .nav-paths {
                     position: absolute;
                     right: 0;
                     display: none;
+
+                    .link-btn {
+                        color: var(--header-color);
+                    }
                 }
 
                 &:hover {
                     .nav-menu {
-                        color: var(--header-primary);
-                        border-style: double;
+                        background: rgba(0, 0, 0, .15);
                     }
 
                     .nav-paths {
@@ -96,6 +110,10 @@
                             display: flex;
                             width: 100%;
                             border-radius: 0;
+                            
+                            &:hover {
+                                color: var(--header-primary);
+                            }
                         }
 
                         .active-link {

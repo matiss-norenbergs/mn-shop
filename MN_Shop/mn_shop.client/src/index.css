@@ -21,14 +21,14 @@
     --view-side-padding: 2rem;
     --border-radius: 5px;
 
-    --primary-light: #c71944;
-    --primary-rgb-light: 199, 25, 68;
+    --primary-light: #d33232;
+    --primary-rgb-light: 211, 50, 50;
     --background-light: var(--white-2);
     --background-2-light: var(--lighter-gray);
     --color-light: var(--black);
 
-    --background-dark: #151515;
-    --background-2-dark: #141414;
+    --background-dark: #171717;
+    --background-2-dark: #242424;
     --color-dark: var(--white-2);
 
     --primary: var(--primary-light);
