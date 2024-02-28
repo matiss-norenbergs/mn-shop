@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MN_Shop.Server.Helpers;
 using MN_Shop.Server.Models;
 using MN_Shop.Server.Services;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,7 +19,7 @@ namespace MN_Shop.Server.Controllers
 
         public UserDataController(UserService userService) => _userService = userService;
 
-        // GET: api/<UserDataController>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult<IEnumerable<UserData>> Get()
         {
@@ -35,7 +39,6 @@ namespace MN_Shop.Server.Controllers
             }
         }
 
-        // GET api/<UserDataController>/5
         [HttpGet("{id}")]
         public ActionResult<UserData> Get(long id)
         {
@@ -55,7 +58,7 @@ namespace MN_Shop.Server.Controllers
             }
         }
 
-        // POST api/<UserDataController>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<UserData>> Post([FromBody] UserData userData)
         {
@@ -91,10 +94,24 @@ namespace MN_Shop.Server.Controllers
             try
             {
                 var userCollection = _userService.GetUserCollection();
-                if (userCollection.TryGetValue(userData.Email, out var userDetails) && userDetails.Password == UserHelper.EncryptPassword(userData.Password))
-                    return Ok(true);
+                if (!userCollection.TryGetValue(userData.Email, out var userDetails) || userDetails.Password != UserHelper.EncryptPassword(userData.Password))
+                    return BadRequest(false);
 
-                return BadRequest(false);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userDetails.Id.ToString()),
+                    new Claim(ClaimTypes.Name, userDetails.Name),
+                    new Claim(ClaimTypes.Surname, userDetails.Surname),
+                    new Claim(ClaimTypes.Email, userDetails.Email),
+                    new Claim(ClaimTypes.Role, userDetails.Role.ToString())
+                };
+
+                var identity = new ClaimsIdentity(claims, "MyAuthScheme");
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(principal);
+
+                return Ok(true);
             }
             catch (Exception ex)
             {
@@ -102,7 +119,22 @@ namespace MN_Shop.Server.Controllers
             }
         }
 
-        // DELETE api/<UserDataController>/5
+        [HttpPost("logout")]
+        public async Task<ActionResult<bool>> UserLogout()
+        {
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {

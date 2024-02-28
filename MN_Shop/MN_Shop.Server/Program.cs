@@ -1,9 +1,20 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MN_Shop.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<UserService>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opts =>
+    {
+        opts.Cookie.Name = "MN_USER_COOKIE";
+        opts.LoginPath = "/api/UserData/login";
+        opts.LogoutPath = "/api/UserData/logout";
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -22,7 +33,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
 

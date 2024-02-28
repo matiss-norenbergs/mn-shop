@@ -129,3 +129,19 @@
         }
     }
 }
+
+.header-icon {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1;
+    width: 2.5rem;
+    padding: .3rem;
+    border-radius: 50%;
+    color: var(--header-background);
+
+    &:hover {
+        background: rgba(0, 0, 0, .15);
+    }
+}

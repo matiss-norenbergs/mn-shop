@@ -1,9 +1,12 @@
+import { useCallback } from "react"
+
 import Core from "./components/core"
 import Input from './components/input'
 
 import Home from './pages/home'
 import Login from "./pages/login"
 import Users from './pages/users'
+import { logoutUser } from "./helpers/axios/userService"
 
 const routes = [
     {
@@ -30,6 +33,15 @@ const routes = [
 ]
 
 const App = () => {
+
+    const handleLogoutUser = useCallback(() => {
+        logoutUser()
+            .then(response => {
+                if (response.status === 200)
+                    console.log("success")
+            })
+    }, [])
+
     return (
         <Core
             appTitle="Game Shop"
@@ -39,6 +51,7 @@ const App = () => {
             //     placeholder="Search..."
             // />}
             hideFooter
+            logoutUser={handleLogoutUser}
         />
     )
 }

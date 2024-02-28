@@ -52,6 +52,9 @@ const Users = () => {
                     setData(response.data)
                 }
             })
+            .catch(() => {
+                setData([])
+            })
             .finally(() => {
                 setIsDataLoading(false)
             })

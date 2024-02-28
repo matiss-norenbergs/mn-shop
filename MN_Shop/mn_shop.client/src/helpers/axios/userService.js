@@ -49,6 +49,18 @@ const loginUser = (postParams, cancelToken) => {
     )
 }
 
+const logoutUser = (cancelToken) => {
+    return axios.post(`${apiUrl}${objects.user}/logout`,
+        {},
+        {
+            headers: headers
+        },
+        {
+            cancelToken: cancelToken
+        }
+    )
+}
+
 const deleteUserData = (postParams, cancelToken) => {
     return axios.delete(`${apiUrl}${objects.user}/${postParams?.id}`, {
         cancelToken: cancelToken
@@ -61,5 +73,6 @@ export {
     getUserData,
     saveUserData,
     deleteUserData,
-    loginUser
+    loginUser,
+    logoutUser
 }

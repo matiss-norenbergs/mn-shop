@@ -36,6 +36,9 @@ const UserForm = forwardRef(({
 
     const [form] = Form.useForm()
 
+    const isRegisterForm = formState === userFormStates.register
+    const isEditForm = objectId !== 0
+
     const getUser = useCallback((userId) => {
         const postParams = {
             id: userId
@@ -128,8 +131,6 @@ const UserForm = forwardRef(({
         getUser(objectId)
     }, [getUser, objectId])
 
-    const isRegisterForm = formState === userFormStates.register
-
     const validatePassword = useCallback(({ field }, value) => {
         return new Promise((resolve, reject) => {
             if (!isRegisterForm)
@@ -149,8 +150,6 @@ const UserForm = forwardRef(({
             { validator: validatePassword }
         ]
     }, [validatePassword])
-
-    const isEditForm = objectId !== 0
 
     return (
         <Form form={form}>

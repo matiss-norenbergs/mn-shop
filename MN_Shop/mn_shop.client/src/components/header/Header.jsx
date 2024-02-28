@@ -15,7 +15,8 @@ const propTypes = {
     paths: PropTypes.array,
     extraContent: PropTypes.node,
     appTitle: PropTypes.string,
-    showLogo: PropTypes.bool
+    showLogo: PropTypes.bool,
+    logoutUser: PropTypes.func
 }
 const defaultProps = {
     paths: [],
@@ -26,7 +27,8 @@ const Header = ({
     paths,
     extraContent,
     appTitle,
-    showLogo
+    showLogo,
+    logoutUser
 }) => (
     <header className={styles["header-wrapper"]}>
         <div className={styles["header-left-side"]}>
@@ -72,6 +74,17 @@ const Header = ({
                 </nav>
             )}
             <ThemeSwitch />
+            {logoutUser && (
+                <span
+                    className={styles["header-icon"]}
+                    onClick={logoutUser}
+                >
+                    <FaIcon
+                        icon="arrow-right-from-bracket"
+                        fixedWidth
+                    />
+                </span>
+            )}
         </div>
     </header>
 )

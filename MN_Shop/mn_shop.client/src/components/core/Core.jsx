@@ -18,7 +18,8 @@ const propTypes = {
     hideFooter: PropTypes.bool,
     extraHeaderContent: PropTypes.node,
     appTitle: PropTypes.string,
-    showHeaderLogo: PropTypes.bool
+    showHeaderLogo: PropTypes.bool,
+    logoutUser: PropTypes.func
 }
 const defaultProps = {}
 
@@ -27,7 +28,8 @@ const Core = ({
     hideFooter,
     extraHeaderContent,
     appTitle,
-    showHeaderLogo
+    showHeaderLogo,
+    logoutUser
 }) => {
     const headerPaths = routes.filter(({ menuHidden }) => !menuHidden).map(({ path, title, icon }) => ({
         path,
@@ -48,6 +50,7 @@ const Core = ({
                     extraContent={extraHeaderContent}
                     appTitle={appTitle}
                     showLogo={showHeaderLogo}
+                    logoutUser={logoutUser}
                 />
                 <div className={styles["core-content"]}>
                     <Routes>
