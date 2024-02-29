@@ -1,10 +1,14 @@
 import PropTypes from "prop-types"
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo } from "react"
+import { useDispatch } from "react-redux"
 
 import Form from "@/components/form"
 import Input from "@/components/input"
 
-import { getUserData, saveUserData, loginUser } from "@/helpers/axios/userService"
+import { getUserData, saveUserData } from "@/helpers/axios/userService"
+import { loginUser } from "@/helpers/axios/authService"
+
+import { setUser } from "@/redux/features/user/userSlice"
 
 //import styles from "./UserForm.module.css"
 
@@ -35,6 +39,7 @@ const UserForm = forwardRef(({
 }, ref) => {
 
     const [form] = Form.useForm()
+    const dispatch = useDispatch()
 
     const isRegisterForm = formState === userFormStates.register
     const isEditForm = objectId !== 0
@@ -109,8 +114,10 @@ const UserForm = forwardRef(({
 
                     loginUser(postParams)
                         .then(response => {
-                            if (!!response && response.status === 200)
+                            if (!!response && response.status === 200) {
+                                dispatch(setUser(response.data))
                                 return resolve()
+                            }
                         })
                         .catch(() => {
                             return reject()
@@ -120,7 +127,7 @@ const UserForm = forwardRef(({
                     return reject()
                 })
         })
-    }, [form])
+    }, [form, dispatch])
 
     useImperativeHandle(ref, () => ({
         save: handleUserSave,

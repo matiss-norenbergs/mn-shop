@@ -1,4 +1,5 @@
 import { useCallback } from "react"
+import { Provider } from "react-redux"
 
 import Core from "./components/core"
 import Input from './components/input'
@@ -6,7 +7,10 @@ import Input from './components/input'
 import Home from './pages/home'
 import Login from "./pages/login"
 import Users from './pages/users'
-import { logoutUser } from "./helpers/axios/userService"
+
+import { logoutUser } from "@/helpers/axios/authService"
+
+import store from "./redux/stores/store"
 
 const routes = [
     {
@@ -43,16 +47,18 @@ const App = () => {
     }, [])
 
     return (
-        <Core
-            appTitle="Game Shop"
-            showHeaderLogo={false}
-            routes={routes}
-            // extraHeaderContent={<Input
-            //     placeholder="Search..."
-            // />}
-            hideFooter
-            logoutUser={handleLogoutUser}
-        />
+        <Provider store={store}>
+            <Core
+                appTitle="Game Shop"
+                showHeaderLogo={false}
+                routes={routes}
+                // extraHeaderContent={<Input
+                //     placeholder="Search..."
+                // />}
+                hideFooter
+                logoutUser={handleLogoutUser}
+            />
+        </Provider>
     )
 }
 

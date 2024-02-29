@@ -11,8 +11,8 @@ using System.Security.Claims;
 
 namespace MN_Shop.Server.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class UserDataController : ControllerBase
     {
         private readonly UserService _userService;
@@ -81,52 +81,6 @@ namespace MN_Shop.Server.Controllers
                     return BadRequest();
 
                 return Ok(userData);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("login")]
-        public async Task<ActionResult<bool>> UserLogin([FromBody] UserData userData)
-        {
-            try
-            {
-                var userCollection = _userService.GetUserCollection();
-                if (!userCollection.TryGetValue(userData.Email, out var userDetails) || userDetails.Password != UserHelper.EncryptPassword(userData.Password))
-                    return BadRequest(false);
-
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userDetails.Id.ToString()),
-                    new Claim(ClaimTypes.Name, userDetails.Name),
-                    new Claim(ClaimTypes.Surname, userDetails.Surname),
-                    new Claim(ClaimTypes.Email, userDetails.Email),
-                    new Claim(ClaimTypes.Role, userDetails.Role.ToString())
-                };
-
-                var identity = new ClaimsIdentity(claims, "MyAuthScheme");
-                var principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync(principal);
-
-                return Ok(true);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("logout")]
-        public async Task<ActionResult<bool>> UserLogout()
-        {
-            try
-            {
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-                return Ok(true);
             }
             catch (Exception ex)
             {

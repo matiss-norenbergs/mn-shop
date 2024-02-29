@@ -1,7 +1,8 @@
 const apiUrl = "api/"
 
 const objects = {
-    user: "UserData"
+    user: "UserData",
+    auth: "Authentication"
 }
 
 export {
