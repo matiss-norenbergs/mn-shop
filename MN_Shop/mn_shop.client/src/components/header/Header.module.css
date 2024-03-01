@@ -30,6 +30,10 @@
         }
     }
 
+    .header-right-side {
+        display: flex;
+    }
+
     .header-contents {
         display: flex;
         align-items: center;

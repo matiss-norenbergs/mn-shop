@@ -1,14 +1,17 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import axios from "axios"
+import { useCallback, useEffect, useRef, useState } from 'react'
+import axios from 'axios'
 
 import Layout from '@/components/layout'
+import Heading from '@/components/heading'
 import Table from "@/components/table"
 import Button from "@/components/button"
 import ModalComponent from "@/components/modalComponent"
 
-import UserForm from "@/shared/userForm"
+import ProductForm from './components/productForm'
 
-import { deleteUserData, getUserListData, respStatus } from "@/helpers/axios/userService"
+import { deleteProduct, getProductList } from '@/helpers/axios/productService'
+
+import styles from "./Products.module.css"
 
 const columns = [
     {
@@ -22,35 +25,34 @@ const columns = [
         width: 100
     },
     {
-        field: "surname",
-        name: "Surname",
+        field: "price",
+        name: "Price",
         width: 150
     },
     {
-        field: "email",
-        name: "Email",
-        width: 200
-    }
+        field: "description",
+        name: "Description",
+        width: 300
+    },
 ]
 
-const Users = () => {
+const Products = () => {
     const [data, setData] = useState([])
     const [selectedRows, setSelectedRows] = useState([])
     const [isDataLoading, setIsDataLoading] = useState(false)
 
-    const userFormModalElementRef = useRef(null)
+    const productFormModalElementRef = useRef(null)
     const axiosCancelToken = useRef(null)
 
     const isRowSelected = selectedRows.length === 1
 
-    const getUsers = useCallback(() => {
+    const getProducts = useCallback(() => {
         setIsDataLoading(true)
 
-        getUserListData(axiosCancelToken.current.token)
+        getProductList(axiosCancelToken.current.token)
             .then(response => {
-                if (!!response && response.status === respStatus.success) {
+                if (!!response && response.status === 200)
                     setData(response.data)
-                }
             })
             .catch(() => {
                 setData([])
@@ -58,17 +60,17 @@ const Users = () => {
             .finally(() => {
                 setIsDataLoading(false)
             })
-    }, [axiosCancelToken])
+    }, [])
 
     const handleCreateClick = useCallback(() => {
-        userFormModalElementRef.current?.open()
+        productFormModalElementRef.current?.open()
     }, [])
 
     const handleEditClick = useCallback(() => {
         if (!isRowSelected)
             return
 
-        userFormModalElementRef.current?.open({ objectId: selectedRows[0].id })
+        productFormModalElementRef.current?.open({ objectId: selectedRows[0].id })
     }, [selectedRows, isRowSelected])
 
     const handleDeleteClick = useCallback(() => {
@@ -81,22 +83,22 @@ const Users = () => {
             id: selectedRows[0].id
         }
 
-        deleteUserData(postParams, axiosCancelToken.current.token)
+        deleteProduct(postParams, axiosCancelToken.current.token)
             .then(response => {
                 if (!!response && response.status === 204) {
-                    getUsers()
+                    getProducts()
                 }
             })
             .catch(() => {
                 setIsDataLoading(false)
             })
-    }, [isRowSelected, selectedRows, getUsers])
+    }, [getProducts, isRowSelected, selectedRows])
 
     useEffect(() => {
         axiosCancelToken.current = axios.CancelToken.source()
 
-        getUsers()
-    }, [getUsers])
+        getProducts()
+    }, [getProducts])
 
     useEffect(() => {
         return () => axiosCancelToken.current?.cancel
@@ -129,7 +131,7 @@ const Users = () => {
             </Button.Group>
             <Button.Spacer />
             <Button
-                onClick={getUsers}
+                onClick={getProducts}
                 disabled={isDataLoading}
                 faIcon="sync"
             >
@@ -140,6 +142,12 @@ const Users = () => {
 
     return (
         <Layout>
+            <Heading
+                level={3}
+                center
+            >
+                {"Products"}
+            </Heading>
             <Table
                 toolbar={toolbar}
                 columns={columns}
@@ -147,15 +155,15 @@ const Users = () => {
                 getSelectedRows={setSelectedRows}
             />
             <ModalComponent
-                ref={userFormModalElementRef}
-                component={<UserForm />}
-                title="Create user"
+                ref={productFormModalElementRef}
+                component={<ProductForm />}
+                title="Create product"
                 confirmText="Save"
-                onConfirm={getUsers}
+                onConfirm={getProducts}
                 width={500}
             />
         </Layout>
     )
 }
 
-export default Users
+export default Products

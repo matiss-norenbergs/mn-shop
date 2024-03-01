@@ -31,7 +31,20 @@ const logoutUser = (cancelToken) => {
     )
 }
 
+const updateUserData = (cancelToken) => {
+    return axios.post(`${apiUrl}${objects.auth}/update`,
+        {},
+        {
+            headers: headers
+        },
+        {
+            cancelToken: cancelToken
+        }
+    )
+}
+
 export {
     loginUser,
-    logoutUser
+    logoutUser,
+    updateUserData
 }

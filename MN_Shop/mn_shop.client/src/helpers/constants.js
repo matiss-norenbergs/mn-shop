@@ -2,7 +2,8 @@ const apiUrl = "api/"
 
 const objects = {
     user: "UserData",
-    auth: "Authentication"
+    auth: "Authentication",
+    product: "ProductData"
 }
 
 export {

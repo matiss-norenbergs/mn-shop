@@ -31,4 +31,8 @@
     &.h6 {
         --heading-size: 1rem;
     }
+
+    &.center {
+        text-align: center;
+    }
 }

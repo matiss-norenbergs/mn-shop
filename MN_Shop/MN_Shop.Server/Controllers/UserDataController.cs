@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MN_Shop.Server.Helpers;
 using MN_Shop.Server.Models;
 using MN_Shop.Server.Services;
-using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,11 +10,9 @@ namespace MN_Shop.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserDataController : ControllerBase
+    public class UserDataController(UserService userService) : ControllerBase
     {
-        private readonly UserService _userService;
-
-        public UserDataController(UserService userService) => _userService = userService;
+        private readonly UserService _userService = userService;
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -46,7 +41,7 @@ namespace MN_Shop.Server.Controllers
             {
                 var user = _userService.GetUserData(id);
                 if (user == null)
-                    throw new Exception("Error getting user data");
+                    throw new Exception("Error getting user data!");
 
                 user.Password = string.Empty;
 
@@ -96,7 +91,7 @@ namespace MN_Shop.Server.Controllers
             {
                 var resp = _userService.DeleteUser(id);
                 if (!resp)
-                    throw new Exception("Error deleting user data");
+                    throw new Exception("Error deleting user data!");
 
                 return NoContent();
             }

@@ -2,6 +2,7 @@
 using DBreeze.Utils;
 using DBreeze;
 using MN_Shop.Server.Models;
+using MN_Shop.Server.Helpers;
 
 namespace MN_Shop.Server.Services
 {
@@ -19,6 +20,26 @@ namespace MN_Shop.Server.Services
             CustomSerializator.ByteArrayDeSerializator = Helper.DeserializeProtobuf;
 
             userEngine ??= new DBreezeEngine($"{Environment.CurrentDirectory}/Databases/Users");
+
+            InitUserSetup();
+        }
+
+        private void InitUserSetup()
+        {
+            var users = GetUserList();
+            if (users == null || users.Count != 0)
+                return;
+
+            var adminUser = new UserData
+            {
+                Name = "Matīss",
+                Surname = "Norenbergs",
+                Email = "admin",
+                Password = UserHelper.EncryptPassword("1"),
+                Role = EUserRole.Admin
+            };
+
+            SetUserData(adminUser);
         }
 
         public List<UserData>? GetUserList()
@@ -46,13 +67,28 @@ namespace MN_Shop.Server.Services
             }
         }
 
-        public Dictionary<string, UserData> GetUserCollection()
+        public Dictionary<string, UserData> GetUserCollectionByEmail()
         {
             try
             {
                 var userList = GetUserList() ?? [];
 
                 return userList.ToDictionary(x => x.Email, x => x);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return [];
+            }
+        }
+
+        public Dictionary<long, UserData> GetUserCollectionById()
+        {
+            try
+            {
+                var userList = GetUserList() ?? [];
+
+                return userList.ToDictionary(x => x.Id, x => x);
             }
             catch (Exception ex)
             {
@@ -89,7 +125,7 @@ namespace MN_Shop.Server.Services
             {
                 using (var tran = userEngine.GetTransaction())
                 {
-                    bool newEntity = userData.Id == 0;
+                    bool newEntity = userData.Id <= 0;
                     if (newEntity)
                         userData.Id = tran.ObjectGetNewIdentity<long>(userTable);
 

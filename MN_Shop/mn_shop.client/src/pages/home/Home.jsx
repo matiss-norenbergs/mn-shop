@@ -1,9 +1,15 @@
 import Layout from "@/components/layout"
+import Heading from '@/components/heading'
 
 const Home = () => {
     return (
         <Layout>
-            {"Home"}
+            <Heading
+                level={3}
+                center
+            >
+                {"Home"}
+            </Heading>
         </Layout>
     )
 }

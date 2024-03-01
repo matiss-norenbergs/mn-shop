@@ -1,4 +1,3 @@
-import { useCallback } from "react"
 import { Provider } from "react-redux"
 
 import Core from "./components/core"
@@ -7,8 +6,7 @@ import Input from './components/input'
 import Home from './pages/home'
 import Login from "./pages/login"
 import Users from './pages/users'
-
-import { logoutUser } from "@/helpers/axios/authService"
+import Products from "./pages/products"
 
 import store from "./redux/stores/store"
 
@@ -25,27 +23,26 @@ const routes = [
         title: "Users",
         icon: "person",
         element: Users,
-        //menuHidden: true
+        //menuHidden: true,
+        admin: true
+    },
+    {
+        path: "/products",
+        title: "Products",
+        icon: "warehouse",
+        element: Products,
+        admin: true
     },
     {
         path: "/login",
         title: "Login",
         icon: "arrow-right-to-bracket",
         element: Login,
-        //menuHidden: true
+        menuHidden: true
     }
 ]
 
 const App = () => {
-
-    const handleLogoutUser = useCallback(() => {
-        logoutUser()
-            .then(response => {
-                if (response.status === 200)
-                    console.log("success")
-            })
-    }, [])
-
     return (
         <Provider store={store}>
             <Core
@@ -56,7 +53,6 @@ const App = () => {
                 //     placeholder="Search..."
                 // />}
                 hideFooter
-                logoutUser={handleLogoutUser}
             />
         </Provider>
     )

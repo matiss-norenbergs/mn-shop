@@ -1,13 +1,14 @@
 import PropTypes from "prop-types"
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo } from "react"
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react"
 import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 import Form from "@/components/form"
 import Input from "@/components/input"
 
 import { getUserData, saveUserData } from "@/helpers/axios/userService"
 import { loginUser } from "@/helpers/axios/authService"
-
 import { setUser } from "@/redux/features/user/userSlice"
 
 //import styles from "./UserForm.module.css"
@@ -40,6 +41,9 @@ const UserForm = forwardRef(({
 
     const [form] = Form.useForm()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    const axiosCancelToken = useRef(null)
 
     const isRegisterForm = formState === userFormStates.register
     const isEditForm = objectId !== 0
@@ -49,7 +53,7 @@ const UserForm = forwardRef(({
             id: userId
         }
 
-        getUserData(postParams)
+        getUserData(postParams, axiosCancelToken.current?.token)
             .then(response => {
                 if (!!response && response.status === 200) {
                     const {
@@ -86,7 +90,7 @@ const UserForm = forwardRef(({
                         postParams[field] = values[field]
                     })
 
-                    saveUserData(postParams)
+                    saveUserData(postParams, axiosCancelToken.current?.token)
                         .then(response => {
                             if (!!response && response.status === 200)
                                 return resolve()
@@ -95,7 +99,7 @@ const UserForm = forwardRef(({
                             return reject()
                         })
                 })
-                .catch(_ => {
+                .catch(() => {
                     return reject()
                 })
         })
@@ -112,10 +116,11 @@ const UserForm = forwardRef(({
                             postParams[field] = values[field]
                     })
 
-                    loginUser(postParams)
+                    loginUser(postParams, axiosCancelToken.current?.token)
                         .then(response => {
                             if (!!response && response.status === 200) {
                                 dispatch(setUser(response.data))
+                                navigate("/")
                                 return resolve()
                             }
                         })
@@ -123,11 +128,11 @@ const UserForm = forwardRef(({
                             return reject()
                         })
                 })
-                .catch(_ => {
+                .catch(() => {
                     return reject()
                 })
         })
-    }, [form, dispatch])
+    }, [form, dispatch, navigate])
 
     useImperativeHandle(ref, () => ({
         save: handleUserSave,
@@ -137,6 +142,12 @@ const UserForm = forwardRef(({
     useEffect(() => {
         getUser(objectId)
     }, [getUser, objectId])
+
+    useEffect(() => {
+        axiosCancelToken.current = axios.CancelToken.source()
+
+        return () => axiosCancelToken.current?.cancel
+    }, [])
 
     const validatePassword = useCallback(({ field }, value) => {
         return new Promise((resolve, reject) => {

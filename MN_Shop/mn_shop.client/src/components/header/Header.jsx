@@ -1,7 +1,8 @@
 import PropTypes from "prop-types"
-
 import classNames from "classnames"
-import { NavLink } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { useCallback } from "react"
+import { NavLink, useNavigate } from "react-router-dom"
 
 import Button from "../button"
 import MNIcon from "../mnIcon"
@@ -10,8 +11,10 @@ import ThemeSwitch from "../themeSwitch"
 import Heading from "../heading"
 import Dropdown from "../dropdown"
 
+import { logoutUser } from "@/helpers/axios/authService"
+import { removeUser } from "@/redux/features/user/userSlice"
+
 import styles from "./Header.module.css"
-import { useSelector } from "react-redux"
 
 const propTypes = {
     paths: PropTypes.array,
@@ -30,9 +33,23 @@ const Header = ({
     extraContent,
     appTitle,
     showLogo,
-    logoutUser
 }) => {
     const user = useSelector((state) => state.user)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const handleLogin = useCallback(() => {
+        navigate("/login")
+    }, [navigate])
+
+    const handleLogout = useCallback(() => {
+        logoutUser()
+            .then(response => {
+                if (response.status === 200) {
+                    dispatch(removeUser())
+                }
+            })
+    }, [dispatch])
 
     return (
         <header className={styles["header-wrapper"]}>
@@ -78,31 +95,54 @@ const Header = ({
                         </div>
                     </nav>
                 )}
-                <ThemeSwitch />
-                {Object.keys(user).length > 0 && (
-                    <Dropdown items={[{
-                        key: 1,
-                        label: `${user.Name} ${user.Surname}`
-                    }]}>
-                        <span className={styles["header-icon"]}>
+                <div className={styles["header-right-side"]}>
+                    <ThemeSwitch />
+                    {Object.keys(user).length > 0 ? (
+                        <Dropdown items={[{
+                            key: 1,
+                            label: (
+                                <span>
+                                    <FaIcon
+                                        icon={["far", "user"]}
+                                        fixedWidth
+                                        padded
+                                    />
+                                    {`${user.Name} ${user.Surname}`}
+                                </span>
+                            )
+                        }, {
+                            key: 2,
+                            label: (
+                                <span>
+                                    <FaIcon
+                                        icon="arrow-right-from-bracket"
+                                        fixedWidth
+                                        padded
+                                    />
+                                    {"Logout"}
+                                </span>
+                            ),
+                            onClick: handleLogout
+                        }]}>
+                            <span className={styles["header-icon"]}>
+                                <FaIcon
+                                    icon="user"
+                                    fixedWidth
+                                />
+                            </span>
+                        </Dropdown>
+                    ) : (
+                        <span
+                            className={styles["header-icon"]}
+                            onClick={handleLogin}
+                        >
                             <FaIcon
-                                icon="user"
+                                icon="arrow-right-to-bracket"
                                 fixedWidth
                             />
                         </span>
-                    </Dropdown>
-                )}
-                {logoutUser && (
-                    <span
-                        className={styles["header-icon"]}
-                        onClick={logoutUser}
-                    >
-                        <FaIcon
-                            icon="arrow-right-from-bracket"
-                            fixedWidth
-                        />
-                    </span>
-                )}
+                    )}
+                </div>
             </div>
         </header>
     )
