@@ -30,6 +30,12 @@ const columns = [
         field: "email",
         name: "Email",
         width: 200
+    },
+    {
+        field: "createdAt",
+        name: "Created at",
+        width: 150,
+        align: "center"
     }
 ]
 

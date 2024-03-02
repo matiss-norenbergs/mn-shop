@@ -5,6 +5,7 @@ import axios from "axios"
 import Form from "@/components/form"
 import Input from "@/components/input"
 import TextArea from "@/components/textArea"
+import InputNumber from "@/components/inputNumber"
 
 import { saveProduct, getProductData } from "@/helpers/axios/productService"
 
@@ -40,6 +41,7 @@ const ProductForm = forwardRef(({
                     const {
                         id,
                         name,
+                        price,
                         description
                     } = response.data
 
@@ -48,6 +50,7 @@ const ProductForm = forwardRef(({
 
                     form.setFieldsValue({
                         name,
+                        price,
                         description
                     })
                 }
@@ -105,6 +108,16 @@ const ProductForm = forwardRef(({
                 label="Name"
             >
                 <Input />
+            </Form.Field>
+            <Form.Field
+                name="price"
+                initialValue={0}
+                //rules={inputRules}
+                label="Price"
+            >
+                <InputNumber
+                    min={0}
+                />
             </Form.Field>
             <Form.Field
                 name="description"

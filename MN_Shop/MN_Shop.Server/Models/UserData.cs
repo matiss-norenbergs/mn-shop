@@ -25,6 +25,18 @@ namespace MN_Shop.Server.Models
 
         [ProtoMember(6, IsRequired = true)]
         public EUserRole Role { get; set; } = EUserRole.Customer;
+
+        [ProtoMember(7, IsRequired = true)]
+        public int LanguageId { get; set; } = 2057; //en-GB //1062 lv-LV //1031 de-DE
+
+        [ProtoMember(8, IsRequired = true)]
+        public string DefaultTimeZone { get; set; } = "FLE Standard Time";
+
+        [ProtoMember(9, IsRequired = true)]
+        public bool UseDayLightSaving { get; set; } = true;
+
+        [ProtoMember(10, IsRequired = true)]
+        public long CreatedAtTicks { get; set; } = DateTime.MinValue.Ticks;
     }
 
     public enum EUserRole

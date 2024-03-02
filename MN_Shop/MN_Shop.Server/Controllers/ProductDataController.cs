@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MN_Shop.Server.Helpers;
 using MN_Shop.Server.Models;
+using MN_Shop.Server.ModelsJson;
 using MN_Shop.Server.Services;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MN_Shop.Server.Controllers
 {
@@ -14,13 +14,15 @@ namespace MN_Shop.Server.Controllers
         private readonly ProductService _productService = productService;
 
         [HttpGet]
-        public ActionResult<IEnumerable<ProductData>> Get()
+        public ActionResult<IEnumerable<ProductDataJson>> Get()
         {
             var productList = _productService.GetProductList();
             if (productList == null)
                 return NotFound();
 
-            return productList;
+            var productJson = ProductHelper.GetProductDataJson(productList, new UserData());
+
+            return productJson;
         }
 
         [HttpGet("{id}")]
@@ -42,7 +44,7 @@ namespace MN_Shop.Server.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<bool>> Post([FromBody] ProductData productData)
+        public ActionResult Post([FromBody] ProductData productData)
         {
             try
             {
@@ -51,8 +53,8 @@ namespace MN_Shop.Server.Controllers
                 if (string.IsNullOrEmpty(productData.Name))
                     return BadRequest();
 
-                var resp = _productService.SetProductData(productData);
-                if (resp <= 0)
+                var response = _productService.SetProductData(productData);
+                if (response <= 0)
                     return BadRequest();
 
                 return Ok();
@@ -65,12 +67,12 @@ namespace MN_Shop.Server.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public ActionResult Delete(long id)
         {
             try
             {
-                var resp = _productService.DeleteProduct(id);
-                if (!resp)
+                var response = _productService.DeleteProduct(id);
+                if (!response)
                     throw new Exception("Error deleting product data!");
 
                 return NoContent();

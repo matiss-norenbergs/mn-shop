@@ -22,12 +22,13 @@ const columns = [
     {
         field: "name",
         name: "Name",
-        width: 100
+        width: 200
     },
     {
-        field: "price",
+        field: "priceString",
         name: "Price",
-        width: 150
+        width: 150,
+        align: "right"
     },
     {
         field: "description",

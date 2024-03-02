@@ -15,6 +15,6 @@ namespace MN_Shop.Server.Models
         public string Description { get; set; } = string.Empty;
 
         [ProtoMember(4, IsRequired = true)]
-        public decimal Price { get; set; } = 0;
+        public double? Price { get; set; } = null;
     }
 }

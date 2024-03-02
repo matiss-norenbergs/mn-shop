@@ -127,7 +127,10 @@ namespace MN_Shop.Server.Services
                 {
                     bool newEntity = userData.Id <= 0;
                     if (newEntity)
+                    {
                         userData.Id = tran.ObjectGetNewIdentity<long>(userTable);
+                        userData.CreatedAtTicks = DateTime.UtcNow.Ticks;
+                    }
 
                     var dbObject = new DBreezeObject<UserData>
                     {

@@ -14,7 +14,8 @@ const defaultProps = {
 
 const TextArea = ({
     className,
-    rows
+    rows,
+    ...rest
 }) => {
     return (
         <textarea
@@ -23,6 +24,7 @@ const TextArea = ({
                 className
             )}
             rows={rows}
+            {...rest}
         />
     )
 }

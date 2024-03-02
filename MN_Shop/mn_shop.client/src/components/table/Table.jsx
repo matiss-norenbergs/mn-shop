@@ -1,11 +1,10 @@
 import PropTypes from "prop-types"
-
-import { useCallback, useEffect, useState } from "react"
+import classNames from "classnames"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import SelectedRenderer from "./components/selectedRenderer"
 
 import styles from "./Table.module.css"
-import classNames from "classnames"
 
 const columnAlign = {
     left: "left",
@@ -36,6 +35,13 @@ const defaultProps = {
     allowMultiselection: false
 }
 
+const getCellRenderer = (CellRenderer, cellValue, rowData) => (
+    <CellRenderer
+        value={cellValue}
+        data={rowData}
+    />
+)
+
 const Table = ({
     columns,
     data,
@@ -62,13 +68,6 @@ const Table = ({
         })
     }, [allowMultiselection])
 
-    const getCellRenderer = useCallback((CellRenderer, cellValue, rowData) => (
-        <CellRenderer
-            value={cellValue}
-            data={rowData}
-        />
-    ), [])
-
     useEffect(() => {
         if (getSelectedRows)
             getSelectedRows(data.filter(row => targetKeys.includes(row[rowKey])))
@@ -84,60 +83,64 @@ const Table = ({
             <table className={styles["table-wrapper"]}>
                 <thead>
                     <tr>
-                        {columns.map(({
-                            field,
-                            name,
-                            width,
-                            align
-                        }) => (
-                            <th
-                                key={field}
-                                className={styles[align]}
-                                style={{ width }}
-                            >
-                                {name}
-                            </th>
-                        ))}
+                        {useMemo(() => {
+                            return columns.map(({
+                                field,
+                                name,
+                                width,
+                                align
+                            }) => (
+                                <th
+                                    key={field}
+                                    className={styles[align]}
+                                    style={{ width }}
+                                >
+                                    {name}
+                                </th>
+                            ))
+                        }, [columns])}
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((row) => (
-                        <tr
-                            key={row[rowKey]}
-                            onClick={handleRowClick(row[rowKey])}
-                        >
-                            {columns.map(({
-                                field,
-                                name,
-                                align,
-                                cellRenderer
-                            }) => (
-                                field === "select" ? (
-                                    <td
-                                        key={field}
-                                        className={classNames(
-                                            styles[columnAlign.center],
-                                            styles["select-cell"]
-                                        )}
-                                    >
-                                        <SelectedRenderer selected={targetKeys.includes(row[rowKey])} />
-                                    </td>
-                                ) : (
-                                    <td
-                                        key={field}
-                                        className={styles[align]}
-                                        data-cell={name}
-                                    >
-                                        {Object.keys(cellRenderers).includes(cellRenderer) ? (
-                                            getCellRenderer(cellRenderers[cellRenderer], row[field], row)
-                                        ) : (
-                                            row[field]
-                                        )}
-                                    </td>
-                                )
-                            ))}
-                        </tr>
-                    ))}
+                    {useMemo(() => {
+                        return data.map((row) => (
+                            <tr
+                                key={row[rowKey]}
+                                onClick={handleRowClick(row[rowKey])}
+                            >
+                                {columns.map(({
+                                    field,
+                                    name,
+                                    align,
+                                    cellRenderer
+                                }) => (
+                                    field === "select" ? (
+                                        <td
+                                            key={field}
+                                            className={classNames(
+                                                styles[columnAlign.center],
+                                                styles["select-cell"]
+                                            )}
+                                        >
+                                            <SelectedRenderer selected={targetKeys.includes(row[rowKey])} />
+                                        </td>
+                                    ) : (
+                                        <td
+                                            key={field}
+                                            className={styles[align]}
+                                            data-cell={name}
+                                        >
+                                            {Object.keys(cellRenderers).includes(cellRenderer) ? (
+                                                getCellRenderer(cellRenderers[cellRenderer], row[field], row)
+                                            ) : (
+                                                row[field]
+                                            )}
+                                        </td>
+                                    )
+                                ))}
+                            </tr>
+                        ))
+                    }, [cellRenderers, columns, data, handleRowClick, rowKey, targetKeys])}
                 </tbody>
             </table>
         </div>

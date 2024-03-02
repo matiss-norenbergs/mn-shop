@@ -19,12 +19,12 @@ const userFormStates = {
 }
 
 const propTypes = {
-    objectId: PropTypes.number,
+    objectId: PropTypes.string,
     setModalTitle: PropTypes.func,
     formState: PropTypes.oneOf(Object.values(userFormStates))
 }
 const defaultProps = {
-    objectId: 0,
+    objectId: "0",
     formState: userFormStates.register
 }
 
@@ -46,7 +46,7 @@ const UserForm = forwardRef(({
     const axiosCancelToken = useRef(null)
 
     const isRegisterForm = formState === userFormStates.register
-    const isEditForm = objectId !== 0
+    const isEditForm = objectId !== "0"
 
     const getUser = useCallback((userId) => {
         const postParams = {
@@ -64,7 +64,7 @@ const UserForm = forwardRef(({
                         password
                     } = response.data
 
-                    if (id !== 0)
+                    if (id !== "0")
                         setModalTitle("Edit user")
 
                     form.setFieldsValue({

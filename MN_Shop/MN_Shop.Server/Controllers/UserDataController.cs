@@ -2,21 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using MN_Shop.Server.Helpers;
 using MN_Shop.Server.Models;
+using MN_Shop.Server.ModelsJson;
 using MN_Shop.Server.Services;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MN_Shop.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserDataController(UserService userService) : ControllerBase
+    public class UserDataController(UserService userService, UserContext userContext) : ControllerBase
     {
         private readonly UserService _userService = userService;
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public ActionResult<IEnumerable<UserData>> Get()
+        public ActionResult<IEnumerable<UserDataJson>> Get()
         {
             try
             {
@@ -26,7 +25,9 @@ namespace MN_Shop.Server.Controllers
 
                 userList.ForEach(x => x.Password = string.Empty);
 
-                return userList;
+                var jsonData = UserHelper.GetUserDataJson(userList, userContext.User);
+
+                return jsonData;
             }
             catch (Exception ex)
             {
@@ -35,7 +36,7 @@ namespace MN_Shop.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<UserData> Get(long id)
+        public ActionResult<UserDataJson> Get(long id)
         {
             try
             {
@@ -45,7 +46,9 @@ namespace MN_Shop.Server.Controllers
 
                 user.Password = string.Empty;
 
-                return Ok(user);
+                var jsonData = UserHelper.GetUserDataJson(user, new UserData());
+
+                return Ok(jsonData);
             }
             catch (Exception ex)
             {
@@ -55,7 +58,7 @@ namespace MN_Shop.Server.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<UserData>> Post([FromBody] UserData userData)
+        public ActionResult<UserData> Post([FromBody] UserData userData)
         {
             try
             {
@@ -85,12 +88,12 @@ namespace MN_Shop.Server.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public ActionResult Delete(long id)
         {
             try
             {
-                var resp = _userService.DeleteUser(id);
-                if (!resp)
+                var response = _userService.DeleteUser(id);
+                if (!response)
                     throw new Exception("Error deleting user data!");
 
                 return NoContent();

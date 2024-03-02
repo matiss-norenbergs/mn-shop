@@ -7,17 +7,13 @@ using MN_Shop.Server.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MN_Shop.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController(UserService userService, UserContext userContext) : ControllerBase
     {
-        private readonly UserService _userService;
-
-        public AuthenticationController(UserService userService) => _userService = userService;
+        private readonly UserService _userService = userService;
 
         [HttpPost("login")]
         public async Task<ActionResult<bool>> Login([FromBody] AuthenticationData authData)
@@ -42,7 +38,7 @@ namespace MN_Shop.Server.Controllers
 
                 await HttpContext.SignInAsync(principal);
 
-                var userDataResp = new Dictionary<string, object>
+                var userDataResponse = new Dictionary<string, object>
                 {
                     { "Name", userDetails.Name },
                     { "Surname", userDetails.Surname },
@@ -50,9 +46,9 @@ namespace MN_Shop.Server.Controllers
                 };
 
                 if (userDetails.Role == EUserRole.Admin)
-                    userDataResp.Add("IsAdmin", true);
+                    userDataResponse.Add("IsAdmin", true);
 
-                return Ok(userDataResp);
+                return Ok(userDataResponse);
             }
             catch (Exception ex)
             {
@@ -77,26 +73,24 @@ namespace MN_Shop.Server.Controllers
 
         [Authorize]
         [HttpPost("update")]
-        public async Task<ActionResult<bool>> UpdateUserData()
+        public ActionResult UpdateUserData()
         {
             try
-            {   
-                var userIdString = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                var userCollection = _userService.GetUserCollectionById();
-                if (userIdString == null || !long.TryParse(userIdString, out var userId) || !userCollection.TryGetValue(userId, out var userData))
+            {
+                if (!userContext.IsAuthenticated)
                     return BadRequest();
 
-                var userDataResp = new Dictionary<string, object>
+                var userDataResponse = new Dictionary<string, object>
                 {
-                    { "Name", userData.Name },
-                    { "Surname", userData.Surname },
-                    { "Email", userData.Email }
+                    { "Name", userContext.User.Name },
+                    { "Surname", userContext.User.Surname },
+                    { "Email", userContext.User.Email }
                 };
 
-                if (userData.Role == EUserRole.Admin)
-                    userDataResp.Add("IsAdmin", true);
+                if (userContext.User.Role == EUserRole.Admin)
+                    userDataResponse.Add("IsAdmin", true);
 
-                return Ok(userDataResp);
+                return Ok(userDataResponse);
             }
             catch (Exception ex)
             {

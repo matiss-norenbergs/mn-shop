@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MN_Shop.Server;
 using MN_Shop.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ProductService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<UserContext>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(opts =>
