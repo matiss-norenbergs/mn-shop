@@ -7,6 +7,7 @@ import Button from "@/components/button"
 import ModalComponent from "@/components/modalComponent"
 
 import UserForm from "@/shared/userForm"
+import RoleRenderer from "./components/RoleRenderer"
 
 import { deleteUserData, getUserListData, respStatus } from "@/helpers/axios/userService"
 
@@ -29,15 +30,25 @@ const columns = [
     {
         field: "email",
         name: "Email",
-        width: 200
+        width: 170
     },
     {
         field: "createdAt",
         name: "Created at",
-        width: 150,
+        width: 200,
         align: "center"
+    },
+    {
+        field: "role",
+        name: "Role",
+        width: 100,
+        cellRenderer: "roleRenderer"
     }
 ]
+
+const cellRenderers = {
+    roleRenderer: RoleRenderer
+}
 
 const Users = () => {
     const [data, setData] = useState([])
@@ -151,6 +162,7 @@ const Users = () => {
                 columns={columns}
                 data={data}
                 getSelectedRows={setSelectedRows}
+                cellRenderers={cellRenderers}
             />
             <ModalComponent
                 ref={userFormModalElementRef}

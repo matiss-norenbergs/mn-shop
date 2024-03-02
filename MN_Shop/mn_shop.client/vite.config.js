@@ -54,6 +54,10 @@ export default defineConfig({
             '^/api/Product': {
                 target,
                 secure: false
+            },
+            '^/api/Generic': {
+                target,
+                secure: false
             }
         },
         port: 5173,

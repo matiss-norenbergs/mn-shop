@@ -72,6 +72,7 @@ namespace MN_Shop.Server.Controllers
                         throw new Exception("Error getting user data!");
 
                     userData.Password = prevUserData.Password;
+                    userData.CreatedAtTicks = prevUserData.CreatedAtTicks;
                 }
 
                 var resp = _userService.SetUserData(userData);

@@ -17,5 +17,7 @@ namespace MN_Shop.Server.ModelsJson
         public string Password { get; set; } = string.Empty;
 
         public string CreatedAt { get; set; } = string.Empty;
+
+        public string DefaultTimeZone { get; set; } = string.Empty;
     }
 }

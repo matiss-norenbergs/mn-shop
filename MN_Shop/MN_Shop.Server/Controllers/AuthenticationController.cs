@@ -6,6 +6,7 @@ using MN_Shop.Server.Models;
 using MN_Shop.Server.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using MN_Shop.Server.ModelsJson;
 
 namespace MN_Shop.Server.Controllers
 {
@@ -16,7 +17,7 @@ namespace MN_Shop.Server.Controllers
         private readonly UserService _userService = userService;
 
         [HttpPost("login")]
-        public async Task<ActionResult<bool>> Login([FromBody] AuthenticationData authData)
+        public async Task<ActionResult<bool>> Login([FromBody] AuthenticationJson authData)
         {
             try
             {

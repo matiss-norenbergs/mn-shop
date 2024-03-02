@@ -6,6 +6,9 @@ import axios from "axios"
 
 import Form from "@/components/form"
 import Input from "@/components/input"
+import Select from "@/components/select"
+
+import TimeZoneSelect from "../timeZoneSelect"
 
 import { getUserData, saveUserData } from "@/helpers/axios/userService"
 import { loginUser } from "@/helpers/axios/authService"
@@ -32,6 +35,14 @@ const inputRules = [
     { required: true, message: "This field is required!" },
     { whitespace: true, message: "This field is required!" }
 ]
+
+const roleOptions = [{
+    key: 1,
+    value: "Customer"
+}, {
+    key: 2,
+    value: "Admin"
+}]
 
 const UserForm = forwardRef(({
     objectId,
@@ -61,7 +72,9 @@ const UserForm = forwardRef(({
                         name,
                         surname,
                         email,
-                        password
+                        password,
+                        defaultTimeZone,
+                        role
                     } = response.data
 
                     if (id !== "0")
@@ -72,7 +85,9 @@ const UserForm = forwardRef(({
                         surname,
                         email,
                         password,
-                        password2: password
+                        password2: password,
+                        defaultTimeZone,
+                        role
                     })
                 }
             })
@@ -87,7 +102,14 @@ const UserForm = forwardRef(({
             form.validateFields()
                 .then(values => {
                     Object.keys(values).forEach(field => {
-                        postParams[field] = values[field]
+                        switch (field) {
+                            case "role":
+                                postParams[field] = Number(values[field])
+                                break
+                            default:
+                                postParams[field] = values[field]
+                                break
+                        }
                     })
 
                     saveUserData(postParams, axiosCancelToken.current?.token)
@@ -202,6 +224,26 @@ const UserForm = forwardRef(({
             >
                 <Input />
             </Form.Field>
+            {isEditForm && (
+                <>
+                    <Form.Field
+                        name="defaultTimeZone"
+                        initialValue=""
+                        //rules={inputRules}
+                        label="Time zone"
+                    >
+                        <TimeZoneSelect />
+                    </Form.Field>
+                    <Form.Field
+                        name="role"
+                        initialValue={roleOptions[0].key}
+                        //rules={inputRules}
+                        label="Role"
+                    >
+                        <Select items={roleOptions} />
+                    </Form.Field>
+                </>
+            )}
             {!isEditForm && (
                 <>
                     <Form.Field

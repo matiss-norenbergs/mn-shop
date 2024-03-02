@@ -1,6 +1,6 @@
-﻿namespace MN_Shop.Server.Models
+﻿namespace MN_Shop.Server.ModelsJson
 {
-    public class AuthenticationData
+    public class AuthenticationJson
     {
         public string Email { get; set; } = string.Empty;
 

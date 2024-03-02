@@ -9,24 +9,31 @@ namespace MN_Shop.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductDataController(ProductService productService) : ControllerBase
+    public class ProductDataController(ProductService productService, UserContext userContext) : ControllerBase
     {
         private readonly ProductService _productService = productService;
 
         [HttpGet]
         public ActionResult<IEnumerable<ProductDataJson>> Get()
         {
-            var productList = _productService.GetProductList();
-            if (productList == null)
-                return NotFound();
+            try
+            {
+                var productList = _productService.GetProductList();
+                if (productList == null)
+                    return NotFound();
 
-            var productJson = ProductHelper.GetProductDataJson(productList, new UserData());
+                var productJson = ProductHelper.GetProductDataJson(productList, userContext.User);
 
-            return productJson;
+                return Ok(productJson);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ProductData> Get(long id)
+        public ActionResult<ProductDataJson> Get(long id)
         {
             try
             {
@@ -34,7 +41,9 @@ namespace MN_Shop.Server.Controllers
                 if (product == null)
                     throw new Exception("Error getting product data!");
 
-                return Ok(product);
+                var productJson = ProductHelper.GetProductDataJson(product, userContext.User);
+
+                return Ok(productJson);
             }
             catch (Exception ex)
             {

@@ -18,6 +18,12 @@ namespace MN_Shop.Server.Helpers
             if (string.IsNullOrEmpty(userData.Name) || string.IsNullOrEmpty(userData.Surname) || string.IsNullOrEmpty(userData.Email) || (encryptPassword && string.IsNullOrEmpty(userData.Password)))
                 return false;
 
+            var timeZoneCollection = GenericHelper.GetTimeZoneCollection();
+            if (!timeZoneCollection.TryGetValue(userData.DefaultTimeZone, out var timeZone))
+                return false;
+
+            userData.UseDayLightSaving = timeZone.SupportsDaylightSavingTime;
+
             return true;
         }
 
@@ -40,7 +46,8 @@ namespace MN_Shop.Server.Helpers
                 Surname = data.Surname,
                 Email = data.Email,
                 Role = (int)data.Role,
-                CreatedAt = utcDate.UtcToLocal(user.DefaultTimeZone).ToString("dd/MM/yyyy HH:mm:ss")
+                CreatedAt = utcDate.UtcToLocal(user.DefaultTimeZone).ToString("dd/MM/yyyy HH:mm:ss"),
+                DefaultTimeZone = data.DefaultTimeZone
             };
 
             return jsonData;

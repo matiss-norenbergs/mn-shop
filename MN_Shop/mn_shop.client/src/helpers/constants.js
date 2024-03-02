@@ -3,7 +3,8 @@ const apiUrl = "api/"
 const objects = {
     user: "UserData",
     auth: "Authentication",
-    product: "ProductData"
+    product: "ProductData",
+    generic: "Generic"
 }
 
 export {

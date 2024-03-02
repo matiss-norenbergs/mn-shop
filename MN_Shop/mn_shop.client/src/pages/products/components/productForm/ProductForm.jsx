@@ -10,11 +10,11 @@ import InputNumber from "@/components/inputNumber"
 import { saveProduct, getProductData } from "@/helpers/axios/productService"
 
 const propTypes = {
-    objectId: PropTypes.number,
+    objectId: PropTypes.string,
     setModalTitle: PropTypes.func
 }
 const defaultProps = {
-    objectId: 0
+    objectId: "0"
 }
 
 const inputRules = [
@@ -45,12 +45,12 @@ const ProductForm = forwardRef(({
                         description
                     } = response.data
 
-                    if (id !== 0)
+                    if (id !== "0")
                         setModalTitle("Edit product")
 
                     form.setFieldsValue({
                         name,
-                        price,
+                        price: price || 0,
                         description
                     })
                 }
