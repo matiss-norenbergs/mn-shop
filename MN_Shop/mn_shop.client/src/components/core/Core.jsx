@@ -1,7 +1,8 @@
 import PropTypes from "prop-types"
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import classNames from "classnames"
 
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { far } from "@fortawesome/free-regular-svg-icons"
@@ -37,6 +38,7 @@ const Core = ({
     appTitle,
     showHeaderLogo
 }) => {
+    const [isDataLoading, setIsDataLoading] = useState(true)
     const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
 
@@ -55,8 +57,11 @@ const Core = ({
                     dispatch(setUser(response.data))
                 }
             })
-            .catch(() => {
-                console.log("NO USER LOGGED IN")
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => {
+                setIsDataLoading(false)
             })
     }, [dispatch])
 
@@ -104,22 +109,31 @@ const Core = ({
 
     return (
         <div className={styles["core-wrapper"]}>
-            <Router>
-                <Header
-                    paths={headerPaths}
-                    extraContent={extraHeaderContent}
-                    appTitle={appTitle}
-                    showLogo={showHeaderLogo}
-                />
-                <div className={styles["core-content"]}>
-                    <Routes>
-                        {handleRoutes}
-                    </Routes>
-                    {!hideFooter && (
-                        <Footer />
-                    )}
-                </div>
-            </Router>
+                <Router>
+                    <Header
+                        paths={headerPaths}
+                        extraContent={extraHeaderContent}
+                        appTitle={appTitle}
+                        showLogo={showHeaderLogo}
+                    />
+                        <div
+                            className={classNames(
+                                styles["core-content"],
+                                {
+                                    [styles["loading"]]: isDataLoading
+                                }
+                            )}
+                        >
+                            {!isDataLoading && (
+                                <Routes>
+                                    {handleRoutes}
+                                </Routes>
+                            )}
+                            {!hideFooter && (
+                                <Footer />
+                            )}
+                        </div>
+                </Router>
         </div>
     )
 }

@@ -72,14 +72,13 @@ namespace MN_Shop.Server.Controllers
             }
         }
 
-        [Authorize]
         [HttpPost("update")]
         public ActionResult UpdateUserData()
         {
             try
             {
                 if (!userContext.IsAuthenticated)
-                    return BadRequest();
+                    return NoContent();
 
                 var userDataResponse = new Dictionary<string, object>
                 {
