@@ -5,6 +5,7 @@ import Layout from '@/components/layout'
 import Table from "@/components/table"
 import Button from "@/components/button"
 import ModalComponent from "@/components/modalComponent"
+import Heading from "@/components/heading"
 
 import UserForm from "@/shared/userForm"
 import RoleRenderer from "./components/RoleRenderer"
@@ -157,6 +158,12 @@ const Users = () => {
 
     return (
         <Layout>
+            <Heading
+                level={3}
+                center
+            >
+                {"Users"}
+            </Heading>
             <Table
                 toolbar={toolbar}
                 columns={columns}

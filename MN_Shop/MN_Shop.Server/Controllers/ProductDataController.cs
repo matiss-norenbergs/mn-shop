@@ -62,6 +62,13 @@ namespace MN_Shop.Server.Controllers
                 if (string.IsNullOrEmpty(productData.Name))
                     return BadRequest();
 
+                if (productData.Id > 0)
+                {
+                    var product = _productService.GetProductData(productData.Id);
+                    if (product == null)
+                        throw new Exception("Error getting product data!");
+                }
+
                 var response = _productService.SetProductData(productData);
                 if (response <= 0)
                     return BadRequest();

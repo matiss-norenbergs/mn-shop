@@ -25,6 +25,7 @@ const TimeZoneSelect = ({
         <Select
             {...rest}
             items={options}
+            disabled={options.length === 0}
         />
     )
 }

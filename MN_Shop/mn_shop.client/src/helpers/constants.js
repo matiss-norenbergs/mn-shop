@@ -1,4 +1,4 @@
-const apiUrl = "api/"
+const apiUrl = "/api/"
 
 const objects = {
     user: "UserData",

@@ -11,7 +11,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons"
 import Header from "../header"
 import Footer from "../footer"
 
-import { ProtectedRoute } from "./components/Protected"
+import Admin from "./components/admin"
 
 import { updateUserData } from "@/helpers/axios/authService"
 import { setUser } from "@/redux/features/user/userSlice"
@@ -43,11 +43,23 @@ const Core = ({
     const dispatch = useDispatch()
 
     const headerPaths = useMemo(() => {
-        return routes.filter(({ menuHidden, admin }) => !menuHidden && (!admin || (admin && user?.IsAdmin))).map(({ path, title, icon }) => ({
+        const isAdmin = user?.IsAdmin === true
+
+        const headerRoutes = routes.filter(({ menuHidden, admin }) => !menuHidden && !admin).map(({ path, title, icon }) => ({
             path,
             title,
             icon
         }))
+
+        if (isAdmin) {
+            headerRoutes.push({
+                path: "/admin",
+                title: "Admin",
+                icon: "lock"
+            })
+        }
+
+        return headerRoutes
     }, [routes, user])
 
     const handleGetUser = useCallback(() => {
@@ -66,17 +78,34 @@ const Core = ({
     }, [dispatch])
 
     const handleRoutes = useMemo(() => {
-        const protectedRoutes = []
+        const adminRoutes = []
+        const adminIndexRoute = {}
+        const adminHeaderPaths = []
         const renderRoutes = []
 
-        routes.forEach(({ path, element: Element, admin }) => {
+        routes.forEach(({ path, element: Element, admin, title, icon }) => {
             if (admin) {
-                protectedRoutes.push(<Route
+                const adminRoutePath = `/admin${path}`
+
+                if (adminRoutes.length === 0) {
+                    Object.assign(adminIndexRoute, {
+                        key: `index${path}`,
+                        index: true,
+                        element: <Element />
+                    })
+                }
+
+                adminRoutes.push(<Route
                     key={path}
-                    exact={path === "/"}
-                    path={path}
+                    path={adminRoutePath}
                     element={<Element />}
                 />)
+                
+                adminHeaderPaths.push({
+                    path: adminRoutePath,
+                    title,
+                    icon
+                })
             } else {
                 renderRoutes.push(<Route
                     key={path}
@@ -87,13 +116,17 @@ const Core = ({
             }
         })
 
+        if (Object.keys(adminIndexRoute).length > 0)
+            adminRoutes.push(<Route {...adminIndexRoute} />)
+
         return [
             ...renderRoutes,
             <Route
-                key="prot"
-                element={<ProtectedRoute />}
+                key="admin"
+                path="/admin"
+                element={<Admin paths={adminHeaderPaths} />}
             >
-                {protectedRoutes}
+                {adminRoutes}
             </Route>
         ]
     }, [routes])

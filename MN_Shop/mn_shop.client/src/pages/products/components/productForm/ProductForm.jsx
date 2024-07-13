@@ -66,7 +66,15 @@ const ProductForm = forwardRef(({
             form.validateFields()
                 .then(values => {
                     Object.keys(values).forEach(field => {
-                        postParams[field] = values[field]
+                        const fieldValue = values[field]
+                        switch (field) {
+                            case "price":
+                                postParams[field] = fieldValue || null
+                                break
+                            default:
+                                postParams[field] = fieldValue
+                                break
+                        }
                     })
 
                     saveProduct(postParams, axiosCancelToken.current?.token)
